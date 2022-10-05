@@ -8,30 +8,43 @@ public class ArrayStorage {
     private int size = 0;
 
     void clear() {
-        for (int i = 0; i < size; i++)
-            storage[i] = null;
+        Arrays.fill(storage, 0, size, null);
         size = 0;
     }
 
     void save(Resume r) {
-        if (size < storage.length)
+        if (findResume(r.uuid) != null)
+            System.out.println("Ошибка: резюме " + r.uuid + " уже есть.");
+        else if (size < storage.length)
             storage[size++] = r;
     }
 
+    void update(Resume r) {
+        Resume resume = get(r.uuid);
+        if (resume != null)
+            resume = r;
+        else
+            System.out.println("Ошибка: резюме " + r.uuid + " нет.");
+    }
+
     Resume get(String uuid) {
-        for (int i = 0; i < size; i++)
-            if (storage[i].uuid.equals(uuid)) return storage[i];
-        return null;
+        Resume resume = findResume(uuid);
+        if (resume != null)
+            return resume;
+        else {
+            System.out.println("Ошибка: резюме " + uuid + " нет.");
+            return null;
+        }
     }
 
     void delete(String uuid) {
-        for (int i = 0; i < size; i++)
-            if (storage[i].uuid.equals(uuid)) {
-                size--;
-                storage[i] = storage[size];
-                storage[size] = null;
-                break;
-            }
+        Resume resume = findResume(uuid);
+        if (resume != null) {
+            size--;
+            resume = storage[size];
+            storage[size] = null;
+        } else
+            System.out.println("Ошибка: резюме " + uuid + " нет.");
     }
 
     /**
@@ -43,5 +56,11 @@ public class ArrayStorage {
 
     int size() {
         return size;
+    }
+
+    Resume findResume(String uuid) {
+        for (int i = 0; i < size; i++)
+            if (storage[i].uuid.equals(uuid)) return storage[i];
+        return null;
     }
 }
