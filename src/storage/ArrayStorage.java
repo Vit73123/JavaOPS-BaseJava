@@ -17,9 +17,7 @@ public class ArrayStorage {
     }
 
     public void save(Resume r) {
-        if (r.getUuid() == null) {
-            System.out.println("Ошибка: пустой uuid резюме (" + r.getUuid() + ").");
-        } else if (size == storage.length) {
+        if (size == storage.length) {
             System.out.println("Ошибка: достигнут предел количества резюме.");
         } else if (findSearchKey(r.getUuid()) != -1) {
             System.out.println("Ошибка: резюме " + r.getUuid() + " уже есть.");
