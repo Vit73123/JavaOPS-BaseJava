@@ -16,6 +16,14 @@ public class ArrayStorage {
         size = 0;
     }
 
+    public void update(Resume r) {
+        int index = findSearchKey(r.getUuid());
+        if (index == -1) {
+            System.out.println("Ошибка: резюме " + r.getUuid() + " нет.");
+        }
+        storage[index] = r;
+    }
+
     public void save(Resume r) {
         if (size == storage.length) {
             System.out.println("Ошибка: достигнут предел количества резюме.");
@@ -26,33 +34,22 @@ public class ArrayStorage {
         }
     }
 
-    public void update(Resume r) {
-        int index = findSearchKey(r.getUuid());
-        if (index != -1) {
-            storage[index] = r;
-        } else {
-            System.out.println("Ошибка: резюме " + r.getUuid() + " нет.");
-        }
-    }
-
     public Resume get(String uuid) {
         int index = findSearchKey(uuid);
-        if (index != -1) {
-            return storage[index];
-        } else {
+        if (index == -1) {
             System.out.println("Ошибка: резюме " + uuid + " нет.");
             return null;
         }
+        return storage[index];
     }
 
     public void delete(String uuid) {
         int index = findSearchKey(uuid);
-        if (index != -1) {
-            storage[index] = storage[--size];
-            storage[size] = null;
-        } else {
+        if (index == -1) {
             System.out.println("Ошибка: резюме " + uuid + " нет.");
         }
+        storage[index] = storage[--size];
+        storage[size] = null;
     }
 
     /**
