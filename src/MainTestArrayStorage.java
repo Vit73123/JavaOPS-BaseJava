@@ -1,11 +1,12 @@
 import model.Resume;
 import storage.ArrayStorage;
+import storage.Storage;
 
 /**
  * Test for your storage.ArrayStorage implementation
  */
 public class MainTestArrayStorage {
-    private static final ArrayStorage ARRAY_STORAGE = new ArrayStorage();
+    private static final Storage ARRAY_STORAGE = new ArrayStorage();
 
     public static void main(String[] args) {
         final Resume r1 = new Resume();
