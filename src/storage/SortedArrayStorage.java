@@ -9,10 +9,13 @@ public class SortedArrayStorage extends AbstractArrayStorage {
     @Override
     protected int saveResume(Resume r) {
         int index = findSearchKey(r.getUuid());
-        if (index != -1) {
+        if (index >= 0) {
             return -1;
+        } else {
+            index = Math.abs(index);
         }
         System.arraycopy(storage, index, storage, index + 1, size - index);
+        storage[index] = r;
         return index;
     }
 

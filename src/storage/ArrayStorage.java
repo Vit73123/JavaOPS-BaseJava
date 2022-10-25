@@ -12,12 +12,12 @@ public class ArrayStorage extends AbstractArrayStorage {
         if (index != -1) {
             return -1;
         }
-        storage[size++] = r;
+        storage[size] = r;
         return index;
     }
 
     protected void deleteResume(int index) {
-        storage[index] = storage[--size];
+        storage[index] = storage[size];
         storage[size] = null;
     }
 
