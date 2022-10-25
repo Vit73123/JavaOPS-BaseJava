@@ -30,26 +30,27 @@ public abstract class AbstractArrayStorage implements Storage {
     }
 
     public void save(Resume r) {
+        int index = findSearchKey(r.getUuid());
         if (size == storage.length) {
             System.out.println("Ошибка: достигнут предел количества резюме.");
-            return;
-        }
-        if (saveResume(r) != -1) {
+        } else if (index >= 0) {
             System.out.println("Ошибка: резюме " + r.getUuid() + " уже есть.");
         } else {
+            saveResume(r, index);
             size++;
         }
     }
 
-    protected abstract int saveResume(Resume r);
+    protected abstract void saveResume(Resume r, int index);
 
     public void delete(String uuid) {
         int index = findSearchKey(uuid);
-        if (index == -1) {
+        if (index < 0) {
             System.out.println("Ошибка: резюме " + uuid + " нет.");
         } else {
             size--;
             deleteResume(index);
+            storage[size] = null;
         }
     }
 

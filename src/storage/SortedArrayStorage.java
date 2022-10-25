@@ -7,16 +7,10 @@ import java.util.Arrays;
 public class SortedArrayStorage extends AbstractArrayStorage {
 
     @Override
-    protected int saveResume(Resume r) {
-        int index = findSearchKey(r.getUuid());
-        if (index >= 0) {
-            return -1;
-        } else {
-            index = Math.abs(index);
-        }
+    protected void saveResume(Resume r, int index) {
+        index = -index - 1;
         System.arraycopy(storage, index, storage, index + 1, size - index);
         storage[index] = r;
-        return index;
     }
 
     @Override

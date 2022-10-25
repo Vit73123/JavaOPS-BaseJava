@@ -7,18 +7,12 @@ import model.Resume;
  */
 public class ArrayStorage extends AbstractArrayStorage {
 
-    protected int saveResume(Resume r) {
-        int index = findSearchKey(r.getUuid());
-        if (index != -1) {
-            return -1;
-        }
+    protected void saveResume(Resume r, int index) {
         storage[size] = r;
-        return index;
     }
 
     protected void deleteResume(int index) {
         storage[index] = storage[size];
-        storage[size] = null;
     }
 
     protected int findSearchKey(String uuid) {
