@@ -3,6 +3,7 @@ package storage;
 import model.Resume;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class SortedArrayStorage extends AbstractArrayStorage {
 
@@ -22,6 +23,7 @@ public class SortedArrayStorage extends AbstractArrayStorage {
     protected int findSearchKey(String uuid) {
         Resume searchKey = new Resume();
         searchKey.setUuid(uuid);
+        Comparator.comparing(Resume::getUuid);
         return Arrays.binarySearch(storage, 0, size, searchKey);
     }
 }
