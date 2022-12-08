@@ -21,8 +21,8 @@ public abstract class AbstractArrayStorageTest {
     private static final String UUID_1 = "uuid1";
     private static final String UUID_2 = "uuid2";
     private static final String UUID_3 = "uuid3";
-    private static final String UUID_NEW = "uuidnew";
-    private static final String UUID_EXIST = "uuid2";
+    private static final String UUID_NEW = "uuid_new";
+    private static final String UUID_EXIST = UUID_2;
     private static final String UUID_NOT_EXIST = "dummy";
     private static final Resume RESUME_1 = new Resume(UUID_1);
     private static final Resume RESUME_2 = new Resume(UUID_2);
@@ -73,7 +73,7 @@ public abstract class AbstractArrayStorageTest {
     @Test
     public void update() {
         storage.update(RESUME_EXIST);
-        assertGet(RESUME_EXIST);
+        assertSame(RESUME_EXIST, storage.get(UUID_EXIST));
     }
 
     @Test
