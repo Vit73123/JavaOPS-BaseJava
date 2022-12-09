@@ -18,20 +18,21 @@ public abstract class AbstractArrayStorageTest {
 
     private static final int INITIAL_SIZE = 3;
     private static final int WRONG_INITIAL_SIZE = 10;
+
     private static final String UUID_1 = "uuid1";
-    private static final String UUID_2 = "uuid2";
-    private static final String UUID_3 = "uuid3";
-    private static final String UUID_NEW = "uuid_new";
-    private static final String UUID_EXIST = UUID_2;
-    private static final String UUID_NOT_EXIST = "dummy";
     private static final Resume RESUME_1 = new Resume(UUID_1);
+    private static final String UUID_2 = "uuid2";
     private static final Resume RESUME_2 = new Resume(UUID_2);
+    private static final String UUID_3 = "uuid3";
     private static final Resume RESUME_3 = new Resume(UUID_3);
+    private static final String UUID_NEW = "uuid_new";
     private static final Resume RESUME_NEW = new Resume(UUID_NEW);
+    private static final String UUID_EXIST = UUID_2;
     private static final Resume RESUME_EXIST = new Resume(UUID_EXIST);
+    private static final String UUID_NOT_EXIST = "dummy";
     private static final Resume RESUME_NOT_EXIST = new Resume(UUID_NOT_EXIST);
 
-    public AbstractArrayStorageTest(Storage storage) {
+    protected AbstractArrayStorageTest(Storage storage) {
         this.storage = storage;
     }
 
@@ -54,7 +55,7 @@ public abstract class AbstractArrayStorageTest {
     }
 
 
-    public void assertSize(int size) {
+    private void assertSize(int size) {
         assertEquals(size, storage.size());
     }
 
@@ -122,7 +123,7 @@ public abstract class AbstractArrayStorageTest {
         assertGet(RESUME_3);
     }
 
-    public void assertGet(Resume resume) {
+    private void assertGet(Resume resume) {
         Assertions.assertEquals(resume, storage.get(resume.getUuid()));
     }
 
