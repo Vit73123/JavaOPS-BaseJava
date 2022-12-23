@@ -8,24 +8,24 @@ public abstract class AbstractStorage implements Storage {
 
     @Override
     public void update(Resume r) {
-        int index = (int) getExistingSearchKey(r.getUuid());
-        updateResume(index, r);
+        Object searchKey = getExistingSearchKey(r.getUuid());
+        updateResume(searchKey, r);
     }
 
     public void save(Resume r) {
-        int index = (int) getNotExistingSearchKey(r.getUuid());
-        saveResume(index, r);
+        Object searchKey = getNotExistingSearchKey(r.getUuid());
+        saveResume(searchKey, r);
     }
 
     public Resume get(String uuid) {
-        int index = (int) getExistingSearchKey(uuid);
-        return getResume(index);
+        Object searchKey = getExistingSearchKey(uuid);
+        return getResume(searchKey);
     }
 
     @Override
     public void delete(String uuid) {
-        int index = (int) getExistingSearchKey(uuid);
-        deleteResume(index);
+        Object searchKey = getExistingSearchKey(uuid);
+        deleteResume(searchKey);
     }
 
     private Object getExistingSearchKey(String uuid) {
@@ -42,17 +42,17 @@ public abstract class AbstractStorage implements Storage {
         if (isExist(searchKey)) {
             throw new ExistStorageException(uuid);
         } else {
-            return size();
+            return uuid;
         }
     }
 
-    protected abstract void updateResume(int index, Resume r);
+    protected abstract void updateResume(Object searchKey, Resume r);
 
-    protected abstract void saveResume(int index, Resume r);
+    protected abstract void saveResume(Object searchKey, Resume r);
 
-    protected abstract Resume getResume(int index);
+    protected abstract Resume getResume(Object searchKey);
 
-    protected abstract void deleteResume(int index);
+    protected abstract void deleteResume(Object searchKey);
 
     protected abstract Object findSearchKey(String uuid);
 

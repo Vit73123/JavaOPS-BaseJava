@@ -2,13 +2,12 @@ package storage;
 
 import model.Resume;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
 
-public class ListStorage extends AbstractStorage {
+public class MapStorage extends AbstractStorage {
 
-    List<Resume> storage = new ArrayList<>();
+    Map<String, Resume> storage = new HashMap<>();
 
     public int size() {
         return storage.size();
@@ -21,32 +20,31 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     public Resume[] getAll() {
-        return storage.toArray(new Resume[0]);
+        return storage.values().toArray(new Resume[0]);
     }
 
     protected void updateResume(Object searchKey, Resume r) {
-        storage.set((int) searchKey, r);
+        storage.replace((String) searchKey, r);
     }
 
     protected void saveResume(Object searchKey, Resume resume) {
-        storage.add(resume);
+        storage.put((String) searchKey, resume);
     }
 
     protected Resume getResume(Object searchKey) {
-        return storage.get((int) searchKey);
+        return storage.get((String) searchKey);
     }
 
     protected void deleteResume(Object searchKey) {
-        storage.remove((int) searchKey);
+        storage.remove((String) searchKey);
     }
 
     protected Object findSearchKey(String uuid) {
-        for (Resume r : storage) {
-            if (Objects.equals(r.getUuid(), uuid)) {
-                return storage.indexOf(r);
-            }
+        if (storage.containsKey(uuid)) {
+            return uuid;
+        } else {
+            return null;
         }
-        return null;
     }
 
     protected boolean isExist(Object searchKey) {
