@@ -20,11 +20,6 @@ public class ListStorage extends AbstractStorage {
         storage.clear();
     }
 
-    @Override
-    public Resume[] getAll() {
-        return storage.toArray(new Resume[0]);
-    }
-
     protected void updateResume(int index, Resume r) {
         storage.set(index, r);
     }
@@ -41,7 +36,12 @@ public class ListStorage extends AbstractStorage {
         storage.remove(index);
     }
 
-    protected Object findSearchKey(String uuid) {
+    @Override
+    public Resume[] getAll() {
+        return storage.toArray(new Resume[0]);
+    }
+
+    protected int findSearchKey(String uuid) {
         Iterator<Resume> iterator = storage.iterator();
         while(iterator.hasNext()) {
             Resume r = iterator.next();
@@ -49,10 +49,6 @@ public class ListStorage extends AbstractStorage {
                 return storage.indexOf(r);
             }
         }
-        return null;
-    }
-
-    protected boolean isExist(Object searchKey) {
-        return (searchKey != null);
+        return -1;
     }
 }
