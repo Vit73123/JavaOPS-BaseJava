@@ -2,6 +2,3 @@
 out
 *.iml
 log
-/src/storage/MyListStorage.java
-/src/storage/MyMapStorage.java
-/test/storage/MyListStorageTest.java
