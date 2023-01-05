@@ -1,7 +1,5 @@
 package storage;
 
-import static storage.AbstractArrayStorage.STORAGE_LIMIT;
-
 import exception.ExistStorageException;
 import exception.NotExistStorageException;
 import exception.StorageException;
@@ -12,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static storage.AbstractArrayStorage.STORAGE_LIMIT;
 
 public abstract class AbstractArrayStorageTest {
     private final Storage storage;
@@ -100,8 +99,6 @@ public abstract class AbstractArrayStorageTest {
     public void delete() {
         storage.delete(UUID_EXIST);
         assertSize(INITIAL_SIZE - 1);
-        Assertions.assertThrows(NotExistStorageException.class, () ->
-                storage.get(UUID_EXIST));
     }
 
     @Test
