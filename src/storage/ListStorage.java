@@ -3,6 +3,7 @@ package storage;
 import model.Resume;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,24 +25,26 @@ public class ListStorage extends AbstractStorage {
         return storage.toArray(new Resume[0]);
     }
 
-    protected void updateResume(Object searchKey, Resume r) {
-        storage.set((int) searchKey, r);
+    protected void updateResume(int index, Resume r) {
+        storage.set(index, r);
     }
 
-    protected void saveResume(Object searchKey, Resume resume) {
+    protected void saveResume(int index, Resume resume) {
         storage.add(resume);
     }
 
-    protected Resume getResume(Object searchKey) {
-        return storage.get((int) searchKey);
+    protected Resume getResume(int index) {
+        return storage.get(index);
     }
 
-    protected void deleteResume(Object searchKey) {
-        storage.remove((int) searchKey);
+    protected void deleteResume(int index) {
+        storage.remove(index);
     }
 
     protected Object findSearchKey(String uuid) {
-        for (Resume r : storage) {
+        Iterator<Resume> iterator = storage.iterator();
+        while(iterator.hasNext()) {
+            Resume r = iterator.next();
             if (Objects.equals(r.getUuid(), uuid)) {
                 return storage.indexOf(r);
             }
