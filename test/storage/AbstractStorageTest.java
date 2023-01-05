@@ -12,7 +12,7 @@ import org.opentest4j.AssertionFailedError;
 import static org.junit.jupiter.api.Assertions.*;
 import static storage.AbstractArrayStorage.STORAGE_LIMIT;
 
-public abstract class AbstractArrayStorageTest {
+public abstract class AbstractStorageTest {
     private final Storage storage;
 
     private static final int INITIAL_SIZE = 3;
@@ -31,7 +31,7 @@ public abstract class AbstractArrayStorageTest {
     private static final String UUID_NOT_EXIST = "dummy";
     private static final Resume RESUME_NOT_EXIST = new Resume(UUID_NOT_EXIST);
 
-    protected AbstractArrayStorageTest(Storage storage) {
+    protected AbstractStorageTest(Storage storage) {
         this.storage = storage;
     }
 
