@@ -6,7 +6,7 @@ import model.Resume;
 
 public abstract class AbstractStorage implements Storage {
 
-    protected abstract Object getSearchKey(String uuid);
+    protected abstract Object getIndex(String uuid);
 
     protected abstract void doUpdate(Resume r, Object searchKey);
 
@@ -39,7 +39,7 @@ public abstract class AbstractStorage implements Storage {
     }
 
     private Object getExistedSearchKey(String uuid) {
-        Object searchKey = getSearchKey(uuid);
+        Object searchKey = getIndex(uuid);
         if (!isExist(searchKey)) {
             throw new NotExistStorageException(uuid);
         }
@@ -47,7 +47,7 @@ public abstract class AbstractStorage implements Storage {
     }
 
     private Object getNotExistedSearchKey(String uuid) {
-        Object searchKey = getSearchKey(uuid);
+        Object searchKey = getIndex(uuid);
         if (isExist(searchKey)) {
             throw new ExistStorageException(uuid);
         }
