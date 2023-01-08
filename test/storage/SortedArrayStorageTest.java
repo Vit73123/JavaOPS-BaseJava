@@ -25,4 +25,8 @@ public class SortedArrayStorageTest extends AbstractStorageTest {
         Assertions.assertThrows(StorageException.class, () ->
                 storage.save(new Resume()));
     }
+
+    protected Resume[] getAllExpected(Resume[] expected) {
+        return expected;
+    }
 }

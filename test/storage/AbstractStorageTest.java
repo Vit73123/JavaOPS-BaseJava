@@ -107,9 +107,10 @@ public abstract class AbstractStorageTest {
     }
 
     @Test
-    public void getAll() {
+    public void getAll() throws NoSuchFieldException, IllegalAccessException {
         Resume[] expected = new Resume[]{RESUME_1, RESUME_2, RESUME_3};
-        Assertions.assertArrayEquals(storage.getAll(), expected);
+        expected = getAllExpected(expected);
+        assertArrayEquals(storage.getAll(), expected);
     }
 
     @Test
@@ -129,4 +130,7 @@ public abstract class AbstractStorageTest {
                 storage.get(UUID_NOT_EXIST));
         System.out.println(e.getMessage());
     }
+
+    protected abstract Resume[] getAllExpected(Resume[] expected)
+            throws NoSuchFieldException, IllegalAccessException;
 }
