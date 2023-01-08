@@ -10,10 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static storage.AbstractArrayStorage.STORAGE_LIMIT;
 
 public abstract class AbstractStorageTest {
-    private final Storage storage;
+    protected final Storage storage;
 
     private static final int INITIAL_SIZE = 3;
     private static final int WRONG_INITIAL_SIZE = 10;
@@ -129,18 +128,5 @@ public abstract class AbstractStorageTest {
         Exception e = assertThrows(NotExistStorageException.class, () ->
                 storage.get(UUID_NOT_EXIST));
         System.out.println(e.getMessage());
-    }
-
-    @Test
-    public void saveOverflow() {
-        try {
-            while (storage.size() < STORAGE_LIMIT) {
-                storage.save(new Resume());
-            }
-        } catch (StorageException e) {
-            Assertions.fail("Failed: Too early overflow");
-        }
-        Assertions.assertThrows(StorageException.class, () ->
-                storage.save(new Resume()));
     }
 }
