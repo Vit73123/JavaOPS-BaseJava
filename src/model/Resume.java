@@ -12,7 +12,13 @@ public class Resume {
     private final String fullName;
 
     public Resume() {
-        this(UUID.randomUUID().toString(), null);
+//        TODO: My: Make fullName in constructor
+        this(UUID.randomUUID().toString());
+    }
+
+    public Resume(String uuid) {
+        this.uuid = uuid;
+        this.fullName = null;
     }
 
     public Resume(String uuid, String fullName) {
@@ -22,6 +28,10 @@ public class Resume {
 
     public String getUuid() {
         return uuid;
+    }
+
+    public String getFullName() {
+        return fullName;
     }
 
     @Override

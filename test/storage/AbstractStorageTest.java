@@ -2,7 +2,6 @@ package storage;
 
 import exception.ExistStorageException;
 import exception.NotExistStorageException;
-import exception.StorageException;
 import model.Resume;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,13 +17,17 @@ public abstract class AbstractStorageTest {
     private static final int WRONG_INITIAL_SIZE = 10;
 
     private static final String UUID_1 = "uuid1";
-    private static final Resume RESUME_1 = new Resume(UUID_1);
+    private static final String NAME_1 = "FullName1";
+    private static final Resume RESUME_1 = new Resume(UUID_1, NAME_1);
     private static final String UUID_2 = "uuid2";
-    private static final Resume RESUME_2 = new Resume(UUID_2);
+    private static final String NAME_2 = "FullName2";
+    private static final Resume RESUME_2 = new Resume(UUID_2, NAME_2);
     private static final String UUID_3 = "uuid3";
-    private static final Resume RESUME_3 = new Resume(UUID_3);
+    private static final String NAME_3 = "FullName3";
+    private static final Resume RESUME_3 = new Resume(UUID_3, NAME_3);
     private static final String UUID_NEW = "uuid_new";
-    private static final Resume RESUME_NEW = new Resume(UUID_NEW);
+    private static final String NAME_MEW = "FullName_4_new";
+    private static final Resume RESUME_NEW = new Resume(UUID_NEW, NAME_MEW);
     private static final String UUID_EXIST = UUID_2;
     private static final Resume RESUME_EXIST = new Resume(UUID_EXIST);
     private static final String UUID_NOT_EXIST = "dummy";
@@ -66,7 +69,7 @@ public abstract class AbstractStorageTest {
     public void clear() {
         storage.clear();
         assertSize(0);
-        assertArrayEquals(new Resume[0], storage.getAll());
+        assertArrayEquals(new Resume[0], storage.getAllSorted().toArray());
     }
 
     @Test
@@ -107,10 +110,9 @@ public abstract class AbstractStorageTest {
     }
 
     @Test
-    public void getAll() throws NoSuchFieldException, IllegalAccessException {
+    public void getAllSorted() {
         Resume[] expected = new Resume[]{RESUME_1, RESUME_2, RESUME_3};
-        expected = getAllExpected(expected);
-        assertArrayEquals(storage.getAll(), expected);
+        assertArrayEquals(storage.getAllSorted().toArray(), expected);
     }
 
     @Test
@@ -130,7 +132,4 @@ public abstract class AbstractStorageTest {
                 storage.get(UUID_NOT_EXIST));
         System.out.println(e.getMessage());
     }
-
-    protected abstract Resume[] getAllExpected(Resume[] expected)
-            throws NoSuchFieldException, IllegalAccessException;
 }
