@@ -5,6 +5,7 @@ import storage.Storage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 
 /**
  * Interactive test for storage.ArrayStorage implementation
@@ -35,12 +36,12 @@ public class MainArray {
                     System.out.println(ARRAY_STORAGE.size());
                     break;
                 case "save":
-                    r = new Resume(uuid);
-                    ARRAY_STORAGE.save(r);
+                     r = new Resume(uuid);
                     printAll();
                     break;
                 case "update" :
                     r = new Resume(uuid);
+                    ARRAY_STORAGE.save(r);
                     ARRAY_STORAGE.update(r);
                     printAll();
                     break;
@@ -65,15 +66,19 @@ public class MainArray {
     }
 
     static void printAll() {
-        Resume[] all = ARRAY_STORAGE.getAll();
-        System.out.println("----------------------------");
-        if (all.length == 0) {
-            System.out.println("Empty");
-        } else {
-            for (Resume r : all) {
-                System.out.println(r);
-            }
-        }
-        System.out.println("----------------------------");
+//        TODO: My: Make List<Resume> getAllSorted()
+//        Resume[] all = ARRAY_STORAGE.getAll();
+//        TODO: My: Change to:
+//        List<Resume> all = ARRAY_STORAGE.getAllSorted();
+
+//        System.out.println("----------------------------");
+//        if (all.size() == 0) {
+//            System.out.println("Empty");
+//        } else {
+//            for (Resume r : all) {
+//                System.out.println(r);
+//            }
+//        }
+//        System.out.println("----------------------------");
     }
 }

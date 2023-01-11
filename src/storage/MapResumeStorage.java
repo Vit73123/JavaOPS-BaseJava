@@ -2,12 +2,9 @@ package storage;
 
 import model.Resume;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class MapUuidStorage extends AbstractStorage {
+public class MapResumeStorage extends AbstractStorage {
     private final Map<String, Resume> map = new HashMap<>();
 
     @Override
@@ -48,6 +45,15 @@ public class MapUuidStorage extends AbstractStorage {
     @Override
     public List<Resume> getAll() {
         return Arrays.asList(map.values().toArray(new Resume[0]));
+    }
+
+    public Resume getResume(String fullName) {
+        for (Map.Entry<String, Resume> entry : map.entrySet()) {
+            if (Objects.equals(entry.getValue().getFullName(), fullName)) {
+                return entry.getValue();
+            }
+        }
+        return null;
     }
 
     @Override
