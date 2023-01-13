@@ -2,6 +2,7 @@ package storage;
 
 import exception.ExistStorageException;
 import exception.NotExistStorageException;
+import exception.StorageException;
 import model.Resume;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static storage.AbstractArrayStorage.STORAGE_LIMIT;
 
 public abstract class AbstractStorageTest {
     protected final Storage storage;
@@ -25,15 +27,9 @@ public abstract class AbstractStorageTest {
     private static final String UUID_3 = "uuid3";
     private static final String NAME_3 = "FullName3";
     protected static final Resume RESUME_3 = new Resume(UUID_3, NAME_3);
-    private static final String UUID_NEW = "uuid_new";
-    private static final String NAME_MEW = "FullName_4_new";
-    private static final Resume RESUME_NEW = new Resume(UUID_NEW, NAME_MEW);
-    private static final String UUID_EXIST = UUID_2;
-    private static final String NAME_EXIST = "FullName2";
-    private static final Resume RESUME_EXIST = new Resume(UUID_EXIST);
-    private static final String UUID_NOT_EXIST = "dummy";
-    private static final String NAME_NOT_EXIST = "dummy_name";
-    private static final Resume RESUME_NOT_EXIST = new Resume(UUID_NOT_EXIST);
+    private static final String UUID_NEW = "dummy";
+    private static final String NAME_NEW = "dummy_name";
+    private static final Resume RESUME_NEW = new Resume(UUID_NEW);
 
     protected AbstractStorageTest(Storage storage) {
         this.storage = storage;
@@ -52,19 +48,8 @@ public abstract class AbstractStorageTest {
         assertSize(INITIAL_SIZE);
     }
 
-    @Test
-    public void wrongSize() {
-        assertWrongSize(WRONG_INITIAL_SIZE);
-    }
-
-
     private void assertSize(int size) {
         assertEquals(size, storage.size());
-    }
-
-    public void assertWrongSize(int wrongSize) {
-        assertThrows(AssertionFailedError.class,() ->
-                assertSize(wrongSize));
     }
 
     @Test
@@ -76,14 +61,14 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void update() {
-        storage.update(RESUME_EXIST);
-        assertSame(RESUME_EXIST, storage.get(UUID_EXIST));
+        storage.update(RESUME_2);
+        assertSame(RESUME_2, storage.get(UUID_2));
     }
 
     @Test
     public void updateNotExist() {
         assertThrows(NotExistStorageException.class,() ->
-                storage.update(RESUME_NOT_EXIST));
+                storage.update(RESUME_NEW));
     }
 
     @Test
@@ -96,19 +81,19 @@ public abstract class AbstractStorageTest {
     @Test
     public void saveExist() {
         assertThrows(ExistStorageException.class,() ->
-                storage.save(RESUME_EXIST));
+                storage.save(RESUME_2));
     }
 
     @Test
     public void delete() {
-        storage.delete(UUID_EXIST);
+        storage.delete(UUID_2);
         assertSize(INITIAL_SIZE - 1);
     }
 
     @Test
     public void deleteNotExist() {
         Assertions.assertThrows(NotExistStorageException.class, () ->
-                storage.delete(UUID_NOT_EXIST));
+                storage.delete(UUID_NEW));
     }
 
     @Test
@@ -131,7 +116,21 @@ public abstract class AbstractStorageTest {
     @Test
     public void getNotExist() {
         Exception e = assertThrows(NotExistStorageException.class, () ->
-                storage.get(UUID_NOT_EXIST));
+                storage.get(UUID_NEW));
         System.out.println(e.getMessage());
+    }
+
+
+    @Test
+    protected void saveOverflow() {
+        try {
+            while (storage.size() < STORAGE_LIMIT) {
+                storage.save(new Resume());
+            }
+        } catch (StorageException e) {
+            Assertions.fail("Failed: Too early overflow");
+        }
+        Assertions.assertThrows(StorageException.class, () ->
+                storage.save(new Resume()));
     }
 }

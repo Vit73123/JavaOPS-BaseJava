@@ -12,13 +12,11 @@ public class Resume {
     private final String fullName;
 
     public Resume() {
-//        TODO: My: Make fullName in constructor
-        this(UUID.randomUUID().toString());
+        this(null);
     }
 
-    public Resume(String uuid) {
-        this.uuid = uuid;
-        this.fullName = null;
+    public Resume(String fullName) {
+        this(fullName, UUID.randomUUID().toString());
     }
 
     public Resume(String uuid, String fullName) {

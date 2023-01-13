@@ -11,7 +11,7 @@ public class MapUuidStorage extends AbstractStorage {
     private final Map<String, Resume> map = new HashMap<>();
 
     @Override
-    protected Object getIndex(String uuid) {
+    protected Object getSearchKey(String uuid) {
         return uuid;
     }
 
@@ -46,7 +46,7 @@ public class MapUuidStorage extends AbstractStorage {
     }
 
     @Override
-    public List<Resume> getAll() {
+    public List<Resume> doCopyAll() {
         return Arrays.asList(map.values().toArray(new Resume[0]));
     }
 

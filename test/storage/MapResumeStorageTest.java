@@ -23,4 +23,5 @@ class MapResumeStorageTest extends AbstractStorageTest {
         Assertions.assertEquals(resume, mapResumeStorage.getResume(resume.getFullName()));
     }
 
+    protected void saveOverflow() {}
 }
