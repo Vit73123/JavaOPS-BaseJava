@@ -16,7 +16,6 @@ public abstract class AbstractStorageTest {
     protected final Storage storage;
 
     protected static final int INITIAL_SIZE = 3;
-    protected static final int WRONG_INITIAL_SIZE = 10;
 
     private static final String UUID_1 = "uuid1";
     private static final String NAME_1 = "FullName1";

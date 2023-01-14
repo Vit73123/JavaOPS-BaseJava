@@ -17,7 +17,7 @@ public class MapUuidStorage extends AbstractStorage {
 
     @Override
     protected void doUpdate(Resume r, Object searchKey) {
-        map.replace((String) searchKey, r);
+        map.put((String) searchKey, r);
     }
 
     @Override

@@ -6,59 +6,50 @@ import java.util.*;
 
 public class MapResumeStorage extends AbstractStorage {
 
-    private final Map<String, Resume> map = new HashMap<>();
+    private final Map<String, Resume> storage = new HashMap<>();
 
     @Override
     protected Object getSearchKey(String uuid) {
-        return uuid;
+        return storage.get(uuid);
     }
 
     @Override
     protected void doUpdate(Resume r, Object searchKey) {
-        map.replace((String) searchKey, r);
+        storage.put(((Resume) searchKey).getUuid(), r);
     }
 
     @Override
     protected boolean isExist(Object searchKey) {
-        return map.containsKey((String) searchKey);
+        return searchKey != null;
     }
 
     @Override
     protected void doSave(Resume r, Object searchKey) {
-        map.put((String) searchKey, r);
+        storage.put(((Resume) searchKey).getUuid(), r);
     }
 
     @Override
     protected Resume doGet(Object searchKey) {
-        return map.get((String) searchKey);
+        return (Resume) searchKey;
     }
 
     @Override
     protected void doDelete(Object searchKey) {
-        map.remove((String) searchKey);
+        storage.remove(((Resume) searchKey).getUuid());
     }
 
     @Override
     public void clear() {
-        map.clear();
+        storage.clear();
     }
 
     @Override
     public List<Resume> doCopyAll() {
-        return Arrays.asList(map.values().toArray(new Resume[0]));
-    }
-
-    public Resume getResume(String fullName) {
-        for (Map.Entry<String, Resume> entry : map.entrySet()) {
-            if (Objects.equals(entry.getValue().getFullName(), fullName)) {
-                return entry.getValue();
-            }
-        }
-        return null;
+        return Arrays.asList(storage.values().toArray(new Resume[0]));
     }
 
     @Override
     public int size() {
-        return map.size();
+        return storage.size();
     }
 }
