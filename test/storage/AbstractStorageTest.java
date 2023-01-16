@@ -7,7 +7,6 @@ import model.Resume;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.opentest4j.AssertionFailedError;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static storage.AbstractArrayStorage.STORAGE_LIMIT;
@@ -26,9 +25,9 @@ public abstract class AbstractStorageTest {
     private static final String UUID_3 = "uuid3";
     private static final String NAME_3 = "FullName3";
     protected static final Resume RESUME_3 = new Resume(UUID_3, NAME_3);
-    private static final String UUID_NEW = "dummy";
-    private static final String NAME_NEW = "dummy_name";
-    private static final Resume RESUME_NEW = new Resume(UUID_NEW);
+    private static final String UUID_4 = "uuid4";
+    private static final String NAME_4 = "FullName4";
+    protected static final Resume RESUME_4 = new Resume(UUID_4, NAME_4);
 
     protected AbstractStorageTest(Storage storage) {
         this.storage = storage;
@@ -67,13 +66,13 @@ public abstract class AbstractStorageTest {
     @Test
     public void updateNotExist() {
         assertThrows(NotExistStorageException.class,() ->
-                storage.update(RESUME_NEW));
+                storage.update(RESUME_4));
     }
 
     @Test
     public void save() {
-        storage.save(RESUME_NEW);
-        assertGet(RESUME_NEW);
+        storage.save(RESUME_4);
+        assertGet(RESUME_4);
         assertSize(INITIAL_SIZE + 1);
     }
 
@@ -92,7 +91,7 @@ public abstract class AbstractStorageTest {
     @Test
     public void deleteNotExist() {
         Assertions.assertThrows(NotExistStorageException.class, () ->
-                storage.delete(UUID_NEW));
+                storage.delete(UUID_4));
     }
 
     @Test
@@ -115,10 +114,9 @@ public abstract class AbstractStorageTest {
     @Test
     public void getNotExist() {
         Exception e = assertThrows(NotExistStorageException.class, () ->
-                storage.get(UUID_NEW));
+                storage.get(UUID_4));
         System.out.println(e.getMessage());
     }
-
 
     @Test
     protected void saveOverflow() {

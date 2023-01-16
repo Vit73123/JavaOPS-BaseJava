@@ -67,6 +67,5 @@ public abstract class AbstractStorage implements Storage {
             throw new ExistStorageException(uuid);
         }
         return searchKey;
-//        return uuid;
     }
 }
