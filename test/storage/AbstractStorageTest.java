@@ -7,29 +7,27 @@ import model.Resume;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.opentest4j.AssertionFailedError;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static storage.AbstractArrayStorage.STORAGE_LIMIT;
 
 public abstract class AbstractStorageTest {
-    private final Storage storage;
+    protected final Storage storage;
 
-    private static final int INITIAL_SIZE = 3;
-    private static final int WRONG_INITIAL_SIZE = 10;
+    protected static final int INITIAL_SIZE = 3;
 
     private static final String UUID_1 = "uuid1";
-    private static final Resume RESUME_1 = new Resume(UUID_1);
+    private static final String NAME_1 = "FullName1";
+    protected static final Resume RESUME_1 = new Resume(UUID_1, NAME_1);
     private static final String UUID_2 = "uuid2";
-    private static final Resume RESUME_2 = new Resume(UUID_2);
+    private static final String NAME_2 = "FullName2";
+    protected static final Resume RESUME_2 = new Resume(UUID_2, NAME_2);
     private static final String UUID_3 = "uuid3";
-    private static final Resume RESUME_3 = new Resume(UUID_3);
-    private static final String UUID_NEW = "uuid_new";
-    private static final Resume RESUME_NEW = new Resume(UUID_NEW);
-    private static final String UUID_EXIST = UUID_2;
-    private static final Resume RESUME_EXIST = new Resume(UUID_EXIST);
-    private static final String UUID_NOT_EXIST = "dummy";
-    private static final Resume RESUME_NOT_EXIST = new Resume(UUID_NOT_EXIST);
+    private static final String NAME_3 = "FullName3";
+    protected static final Resume RESUME_3 = new Resume(UUID_3, NAME_3);
+    private static final String UUID_4 = "uuid4";
+    private static final String NAME_4 = "FullName4";
+    protected static final Resume RESUME_4 = new Resume(UUID_4, NAME_4);
 
     protected AbstractStorageTest(Storage storage) {
         this.storage = storage;
@@ -48,69 +46,58 @@ public abstract class AbstractStorageTest {
         assertSize(INITIAL_SIZE);
     }
 
-    @Test
-    public void wrongSize() {
-        assertWrongSize(WRONG_INITIAL_SIZE);
-    }
-
-
     private void assertSize(int size) {
         assertEquals(size, storage.size());
-    }
-
-    public void assertWrongSize(int wrongSize) {
-        assertThrows(AssertionFailedError.class,() ->
-                assertSize(wrongSize));
     }
 
     @Test
     public void clear() {
         storage.clear();
         assertSize(0);
-        assertArrayEquals(new Resume[0], storage.getAll());
+        assertArrayEquals(new Resume[0], storage.getAllSorted().toArray());
     }
 
     @Test
     public void update() {
-        storage.update(RESUME_EXIST);
-        assertSame(RESUME_EXIST, storage.get(UUID_EXIST));
+        storage.update(RESUME_2);
+        assertSame(RESUME_2, storage.get(UUID_2));
     }
 
     @Test
     public void updateNotExist() {
         assertThrows(NotExistStorageException.class,() ->
-                storage.update(RESUME_NOT_EXIST));
+                storage.update(RESUME_4));
     }
 
     @Test
     public void save() {
-        storage.save(RESUME_NEW);
-        assertGet(RESUME_NEW);
+        storage.save(RESUME_4);
+        assertGet(RESUME_4);
         assertSize(INITIAL_SIZE + 1);
     }
 
     @Test
     public void saveExist() {
         assertThrows(ExistStorageException.class,() ->
-                storage.save(RESUME_EXIST));
+                storage.save(RESUME_2));
     }
 
     @Test
     public void delete() {
-        storage.delete(UUID_EXIST);
+        storage.delete(UUID_2);
         assertSize(INITIAL_SIZE - 1);
     }
 
     @Test
     public void deleteNotExist() {
         Assertions.assertThrows(NotExistStorageException.class, () ->
-                storage.delete(UUID_NOT_EXIST));
+                storage.delete(UUID_4));
     }
 
     @Test
-    public void getAll() {
+    public void getAllSorted() {
         Resume[] expected = new Resume[]{RESUME_1, RESUME_2, RESUME_3};
-        Assertions.assertArrayEquals(storage.getAll(), expected);
+        assertArrayEquals(storage.getAllSorted().toArray(), expected);
     }
 
     @Test
@@ -127,20 +114,7 @@ public abstract class AbstractStorageTest {
     @Test
     public void getNotExist() {
         Exception e = assertThrows(NotExistStorageException.class, () ->
-                storage.get(UUID_NOT_EXIST));
+                storage.get(UUID_4));
         System.out.println(e.getMessage());
     }
-
-    @Test
-    public void saveOverflow() {
-        try {
-            while (storage.size() < STORAGE_LIMIT) {
-                storage.save(new Resume());
-            }
-        } catch (StorageException e) {
-            Assertions.fail("Failed: Too early overflow");
-        }
-        Assertions.assertThrows(StorageException.class, () ->
-                storage.save(new Resume()));
-    }
-}
+ }

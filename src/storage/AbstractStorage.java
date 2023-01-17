@@ -4,9 +4,18 @@ import exception.ExistStorageException;
 import exception.NotExistStorageException;
 import model.Resume;
 
+import java.util.Comparator;
+import java.util.List;
+
 public abstract class AbstractStorage implements Storage {
 
-    protected abstract Object getIndex(String uuid);
+    protected static final Comparator<Resume> RESUME_COMPARATOR = Comparator
+            .comparing(Resume::getUuid)
+            .thenComparing(Resume::getFullName);
+
+    protected abstract Object getSearchKey(String uuid);
+
+    protected abstract List<Resume> doCopyAll();
 
     protected abstract void doUpdate(Resume r, Object searchKey);
 
@@ -38,8 +47,14 @@ public abstract class AbstractStorage implements Storage {
         return doGet(searchKey);
     }
 
+    public List<Resume> getAllSorted() {
+        List<Resume> resumes = doCopyAll();
+        resumes.sort(RESUME_COMPARATOR);
+        return resumes;
+    }
+
     private Object getExistedSearchKey(String uuid) {
-        Object searchKey = getIndex(uuid);
+        Object searchKey = getSearchKey(uuid);
         if (!isExist(searchKey)) {
             throw new NotExistStorageException(uuid);
         }
@@ -47,7 +62,7 @@ public abstract class AbstractStorage implements Storage {
     }
 
     private Object getNotExistedSearchKey(String uuid) {
-        Object searchKey = getIndex(uuid);
+        Object searchKey = getSearchKey(uuid);
         if (isExist(searchKey)) {
             throw new ExistStorageException(uuid);
         }

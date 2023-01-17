@@ -4,6 +4,7 @@ import exception.StorageException;
 import model.Resume;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Array based storage for Resumes
@@ -25,13 +26,6 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     @Override
     protected void doUpdate(Resume r, Object index) {
         storage[(Integer) index] = r;
-    }
-
-    /**
-     * @return array, contains only Resumes in storage (without null)
-     */
-    public Resume[] getAll() {
-        return Arrays.copyOf(storage, size);
     }
 
     @Override
@@ -60,11 +54,16 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return (Integer) index >= 0;
     }
 
-    //    deleteResume
     protected abstract void fillDeletedElement(int index);
 
-//    saveResume
     protected abstract void insertElement(Resume r, int index);
 
-    protected abstract Integer getIndex(String uuid);
+    protected abstract Integer getSearchKey(String uuid);
+
+    /**
+     * @return array, contains only Resumes in storage (without null)
+     */
+    protected List<Resume> doCopyAll() {
+        return Arrays.asList(Arrays.copyOf(storage, size));
+    }
 }
