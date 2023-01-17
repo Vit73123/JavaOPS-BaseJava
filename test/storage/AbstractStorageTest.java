@@ -132,7 +132,7 @@ public abstract class AbstractStorageTest {
     }
 
     @Test
-    public void overflowStorage() {
+    public void saveOverflow() {
         try {
             while (storage.size() < STORAGE_LIMIT) {
                 storage.save(new Resume());
