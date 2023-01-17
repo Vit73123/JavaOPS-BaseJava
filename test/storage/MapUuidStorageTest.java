@@ -5,6 +5,4 @@ class MapUuidStorageTest extends AbstractStorageTest {
     public MapUuidStorageTest() {
         super(new MapUuidStorage());
     }
-
-    protected void saveOverflow() {}
 }
