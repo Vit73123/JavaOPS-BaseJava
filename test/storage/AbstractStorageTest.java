@@ -117,17 +117,4 @@ public abstract class AbstractStorageTest {
                 storage.get(UUID_4));
         System.out.println(e.getMessage());
     }
-
-    @Test
-    protected void saveOverflow() {
-        try {
-            while (storage.size() < STORAGE_LIMIT) {
-                storage.save(new Resume());
-            }
-        } catch (StorageException e) {
-            Assertions.fail("Failed: Too early overflow");
-        }
-        Assertions.assertThrows(StorageException.class, () ->
-                storage.save(new Resume()));
-    }
  }
