@@ -8,15 +8,13 @@ import org.junit.jupiter.api.Test;
 import static storage.AbstractArrayStorage.STORAGE_LIMIT;
 
 public abstract class AbstractArrayStorageTest extends AbstractStorageTest {
-    private Storage storage;
 
     protected AbstractArrayStorageTest(Storage storage) {
-        super(storage);
-        this.storage = storage;
+        super(storage) ;
     }
 
     @Test
-    protected void saveOverflow() {
+    public void saveOverflow() {
         try {
             while (storage.size() < STORAGE_LIMIT) {
                 storage.save(new Resume());
