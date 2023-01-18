@@ -9,9 +9,9 @@ public class MainTestArrayStorage {
     private static final Storage ARRAY_STORAGE = new ArrayStorage();
 
     public static void main(String[] args) {
-        final Resume r1 = new Resume();
-        final Resume r2 = new Resume();
-        final Resume r3 = new Resume();
+        final Resume r1 = new Resume("Name1");
+        final Resume r2 = new Resume("Name1");
+        final Resume r3 = new Resume("Name1");
 
         ARRAY_STORAGE.save(r1);
         ARRAY_STORAGE.save(r2);
