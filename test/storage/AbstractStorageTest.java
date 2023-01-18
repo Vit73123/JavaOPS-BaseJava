@@ -7,27 +7,33 @@ import model.Resume;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.AssertionFailedError;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static storage.AbstractArrayStorage.STORAGE_LIMIT;
 
 public abstract class AbstractStorageTest {
-    protected final Storage storage;
+    private final Storage storage;
 
-    protected static final int INITIAL_SIZE = 3;
+    private static final int INITIAL_SIZE = 3;
+    private static final int WRONG_INITIAL_SIZE = 10;
 
     private static final String UUID_1 = "uuid1";
-    private static final String NAME_1 = "FullName1";
-    protected static final Resume RESUME_1 = new Resume(UUID_1, NAME_1);
     private static final String UUID_2 = "uuid2";
-    private static final String NAME_2 = "FullName2";
-    protected static final Resume RESUME_2 = new Resume(UUID_2, NAME_2);
     private static final String UUID_3 = "uuid3";
-    private static final String NAME_3 = "FullName3";
-    protected static final Resume RESUME_3 = new Resume(UUID_3, NAME_3);
     private static final String UUID_4 = "uuid4";
-    private static final String NAME_4 = "FullName4";
-    protected static final Resume RESUME_4 = new Resume(UUID_4, NAME_4);
+
+    private static final Resume RESUME_1;
+    private static final Resume RESUME_2;
+    private static final Resume RESUME_3;
+    private static final Resume RESUME_4;
+
+    static {
+        RESUME_1 = new Resume(UUID_1);
+        RESUME_2 = new Resume(UUID_2);
+        RESUME_3 = new Resume(UUID_3);
+        RESUME_4 = new Resume(UUID_4);
+    }
 
     protected AbstractStorageTest(Storage storage) {
         this.storage = storage;
@@ -46,15 +52,26 @@ public abstract class AbstractStorageTest {
         assertSize(INITIAL_SIZE);
     }
 
+    @Test
+    public void wrongSize() {
+        assertWrongSize(WRONG_INITIAL_SIZE);
+    }
+
+
     private void assertSize(int size) {
         assertEquals(size, storage.size());
+    }
+
+    public void assertWrongSize(int wrongSize) {
+        assertThrows(AssertionFailedError.class,() ->
+                assertSize(wrongSize));
     }
 
     @Test
     public void clear() {
         storage.clear();
         assertSize(0);
-        assertArrayEquals(new Resume[0], storage.getAllSorted().toArray());
+        assertArrayEquals(new Resume[0], storage.getAll());
     }
 
     @Test
@@ -95,9 +112,9 @@ public abstract class AbstractStorageTest {
     }
 
     @Test
-    public void getAllSorted() {
+    public void getAll() {
         Resume[] expected = new Resume[]{RESUME_1, RESUME_2, RESUME_3};
-        assertArrayEquals(storage.getAllSorted().toArray(), expected);
+        Assertions.assertArrayEquals(storage.getAll(), expected);
     }
 
     @Test
@@ -117,4 +134,17 @@ public abstract class AbstractStorageTest {
                 storage.get(UUID_4));
         System.out.println(e.getMessage());
     }
- }
+
+    @Test
+    public void saveOverflow() {
+        try {
+            while (storage.size() < STORAGE_LIMIT) {
+                storage.save(new Resume());
+            }
+        } catch (StorageException e) {
+            Assertions.fail("Failed: Too early overflow");
+        }
+        Assertions.assertThrows(StorageException.class, () ->
+                storage.save(new Resume()));
+    }
+}
