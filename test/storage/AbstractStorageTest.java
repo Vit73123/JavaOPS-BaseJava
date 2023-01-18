@@ -2,21 +2,17 @@ package storage;
 
 import exception.ExistStorageException;
 import exception.NotExistStorageException;
-import exception.StorageException;
 import model.Resume;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.opentest4j.AssertionFailedError;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static storage.AbstractArrayStorage.STORAGE_LIMIT;
 
 public abstract class AbstractStorageTest {
     protected final Storage storage;
 
     private static final int INITIAL_SIZE = 3;
-    private static final int WRONG_INITIAL_SIZE = 10;
 
     private static final String UUID_1 = "uuid1";
     private static final String UUID_2 = "uuid2";
@@ -29,10 +25,10 @@ public abstract class AbstractStorageTest {
     private static final Resume RESUME_4;
 
     static {
-        RESUME_1 = new Resume(UUID_1);
-        RESUME_2 = new Resume(UUID_2);
-        RESUME_3 = new Resume(UUID_3);
-        RESUME_4 = new Resume(UUID_4);
+        RESUME_1 = new Resume(UUID_1, "Name1");
+        RESUME_2 = new Resume(UUID_2, "Name2");
+        RESUME_3 = new Resume(UUID_3, "Name3");
+        RESUME_4 = new Resume(UUID_4, "Name4");
     }
 
     protected AbstractStorageTest(Storage storage) {
@@ -52,19 +48,8 @@ public abstract class AbstractStorageTest {
         assertSize(INITIAL_SIZE);
     }
 
-    @Test
-    public void wrongSize() {
-        assertWrongSize(WRONG_INITIAL_SIZE);
-    }
-
-
     private void assertSize(int size) {
         assertEquals(size, storage.size());
-    }
-
-    public void assertWrongSize(int wrongSize) {
-        assertThrows(AssertionFailedError.class,() ->
-                assertSize(wrongSize));
     }
 
     @Test
@@ -76,8 +61,10 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void update() {
-        storage.update(RESUME_2);
-        assertSame(RESUME_2, storage.get(UUID_2));
+        Resume newResume = new Resume(UUID_1, "New Name");
+        storage.update(newResume);
+//        assertSame(newResume, storage.get(UUID_1));
+        assertTrue(newResume == storage.get(UUID_1));
     }
 
     @Test
