@@ -2,39 +2,42 @@ package storage;
 
 import model.Resume;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class MapUuidStorage extends AbstractStorage {
+public class MapUuidStorage extends AbstractStorage<String> {
     private final Map<String, Resume> map = new HashMap<>();
 
     @Override
-    protected Resume getSearchKey(String uuid) {
+    protected String getSearchKey(String uuid) {
+        return uuid;
+    }
+
+    @Override
+    protected void doUpdate(Resume r, String uuid) {
+        map.put(uuid, r);
+    }
+
+    @Override
+    protected boolean isExist(String uuid) {
+        return map.containsKey(uuid);
+    }
+
+    @Override
+    protected void doSave(Resume r, String uuid) {
+        map.put(uuid, r);
+    }
+
+    @Override
+    protected Resume doGet(String uuid) {
         return map.get(uuid);
     }
 
     @Override
-    protected void doUpdate(Resume r, Object resume) {
-        map.put(r.getUuid(), r);
-    }
-
-    @Override
-    protected boolean isExist(Object resume) {
-        return resume != null;
-    }
-
-    @Override
-    protected void doSave(Resume r, Object resume) {
-        map.put(r.getUuid(), r);
-    }
-
-    @Override
-    protected Resume doGet(Object resume) {
-        return (Resume) resume;
-    }
-
-    @Override
-    protected void doDelete(Object resume) {
-        map.remove(((Resume) resume).getUuid());
+    protected void doDelete(String uuid) {
+        map.remove(uuid);
     }
 
     @Override
