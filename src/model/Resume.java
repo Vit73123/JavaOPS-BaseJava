@@ -31,12 +31,28 @@ public class Resume implements Comparable<Resume> {
         return uuid;
     }
 
+    public HashMap getContacts () {
+        return (HashMap) contacts;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Resume resume = (Resume) o;
         return Objects.equals(uuid, resume.uuid) && Objects.equals(fullName, resume.fullName);
+    }
+
+    public boolean contactsEquals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        HashMap contacts = (HashMap) o;
+        for(Object type : contacts.keySet()) {
+            if (!(Objects.equals(this.contacts.get(type), contacts.get(type)))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
