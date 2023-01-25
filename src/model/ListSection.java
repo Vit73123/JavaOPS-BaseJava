@@ -9,12 +9,8 @@ import java.util.Objects;
 public class ListSection extends AbstractSection {
     private final List<String> list = new ArrayList<>();
 
-    public ArrayList<String> getList() {
-        return (ArrayList) list;
-    }
-
-    public void setItem(String item) {
-        list.add(item);
+    public List<String> getList() {
+        return list;
     }
 
     @Override

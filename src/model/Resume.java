@@ -14,6 +14,7 @@ public class Resume implements Comparable<Resume> {
     private final String uuid;
     private final String fullName;
     private final Map<String, String> contacts = new HashMap<>();
+
     private final Map<SectionType, AbstractSection> sections = new HashMap<>();
 
     public Resume(String fullName) {
@@ -31,8 +32,12 @@ public class Resume implements Comparable<Resume> {
         return uuid;
     }
 
-    public HashMap getContacts () {
-        return (HashMap) contacts;
+    public Map getContacts () {
+        return contacts;
+    }
+
+    public Map<SectionType, AbstractSection> getSections() {
+        return sections;
     }
 
     @Override

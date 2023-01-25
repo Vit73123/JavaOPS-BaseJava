@@ -33,8 +33,8 @@ public class OrganizationSection extends AbstractSection {
         this.website = website;
     }
 
-    public ArrayList<Period> getPeriods() {
-        return (ArrayList) periods;
+    public List<Period> getPeriods() {
+        return periods;
     }
 
     @Override
