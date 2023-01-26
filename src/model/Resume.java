@@ -13,8 +13,7 @@ public class Resume implements Comparable<Resume> {
     // Unique identifier
     private final String uuid;
     private final String fullName;
-    private final Map<String, String> contacts = new HashMap<>();
-
+    private final Map<ContactType, String> contacts = new HashMap<>();
     private final Map<SectionType, AbstractSection> sections = new HashMap<>();
 
     public Resume(String fullName) {
