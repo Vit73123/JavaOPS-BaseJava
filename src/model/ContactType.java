@@ -1,28 +1,16 @@
 package model;
 
-import java.util.Objects;
+public enum ContactType {
+    TYPE_1("type 1");
 
-public class ContactType {
-    private final String contactType;
+    private final String title;
 
-    public ContactType(String contactType) {
-        this.contactType = contactType;
+    ContactType(String contactType) {
+        this.title = contactType;
+
     }
 
-    public String get() {
-        return contactType;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        String contactType = (String) o;
-        return Objects.equals(this.contactType, contactType);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(contactType);
+    public String getTitle() {
+        return title;
     }
 }
