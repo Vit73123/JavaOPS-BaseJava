@@ -1,13 +1,21 @@
 package model;
 
 public enum ContactType {
-    TYPE_1("type 1");
+
+    PHONE("Тел."),
+    MOBILE("Мобильный"),
+    HOME_PHONE("Домашний тел."),
+    SKYPE("Skype"),
+    MAIL("Почта"),
+    LINKEDIN("Профиль LinkedIn"),
+    GITHUB("Профиль GitHub"),
+    STACKOVERFLOW("Профиль Stackoverflow"),
+    HOME_PAGE("Домашняя страница");
 
     private final String title;
 
-    ContactType(String contactType) {
-        this.title = contactType;
-
+    ContactType(String title) {
+        this.title = title;
     }
 
     public String getTitle() {

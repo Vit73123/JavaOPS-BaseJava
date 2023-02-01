@@ -1,61 +1,53 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
 import java.util.Objects;
 
-public class Organization extends AbstractSection {
-    private String name;
-    private String website;
-    private final List<Period> periods = new ArrayList<>();
+public class Organization {
 
-    public Organization() {
-    }
+    private Link homePage;
 
-    public Organization(String name, String website) {
-        this.name = name;
-        this.website = website;
-    }
+    private final LocalDate startDate;
+    private final LocalDate endDate;
+    private final String title;
+    private final String description;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getWebsite() {
-        return website;
-    }
-
-    public void setWebsite(String website) {
-        this.website = website;
-    }
-
-    public List<Period> getPeriods() {
-        return periods;
+    public Organization(String name, String url, LocalDate startDate, LocalDate endDate, String title, String description) {
+        Objects.requireNonNull(startDate, "startDate must not be null");
+        Objects.requireNonNull(endDate, "endDate must not be null");
+        Objects.requireNonNull(title, "title must not be null");
+        this.homePage = new Link(name, url);
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.title = title;
+        this.description = description;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Organization org = (Organization) o;
-        return Objects.equals(name, org.name) &&
-                Objects.equals(website, org.website);
+        Organization that = (Organization) o;
+        return homePage.equals(that.homePage) &&
+                startDate.equals(that.startDate) &&
+                endDate.equals(that.endDate) &&
+                title.equals(that.title) &&
+                Objects.equals(description, that.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, website);
+        return Objects.hash(homePage, startDate, endDate, title, description);
     }
 
     @Override
     public String toString() {
-        return "OrganizationSection{" +
-                "name='" + name + '\'' +
-                ", website='" + website + '\'' +
+        return "Organization{" +
+                "homePage=" + homePage +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
                 '}';
     }
 }

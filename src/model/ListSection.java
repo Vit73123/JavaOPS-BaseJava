@@ -1,28 +1,36 @@
 package model;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class ListSection extends AbstractSection {
-    private final List<String> list = new ArrayList<>();
+public class ListSection extends Section {
 
-    public List<String> getList() {
-        return list;
+    private final List<String> items;
+
+    public ListSection(List<String> items) {
+        Objects.requireNonNull(items, "items must not be null");
+        this.items = items;
+    }
+
+    public List<String> getItems() {
+        return items;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ArrayList list = (ArrayList) o;
-        return Arrays.equals(this.list.toArray(), list.toArray());
+        ListSection that = (ListSection) o;
+        return Objects.equals(items, that.items);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(list);
+        return Objects.hash(items);
+    }
+
+    @Override
+    public String toString() {
+        return items.toString();
     }
 }

@@ -2,22 +2,16 @@ package model;
 
 import java.util.Objects;
 
-public class TextSection extends AbstractSection {
-    private String content;
-
-    public TextSection() {
-    }
+public class TextSection extends Section {
+    private final String content;
 
     public TextSection(String content) {
+        Objects.requireNonNull(content, "content must nut be null");
         this.content = content;
     }
 
     public String getContent() {
         return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
     }
 
     @Override
@@ -30,13 +24,11 @@ public class TextSection extends AbstractSection {
 
     @Override
     public int hashCode() {
-        return Objects.hash(content);
+        return content != null ? Objects.hash(content) : 0;
     }
 
     @Override
     public String toString() {
-        return "TextSection{" +
-                "content='" + content + '\'' +
-                '}';
+        return content;
     }
 }
