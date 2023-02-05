@@ -1,9 +1,14 @@
-import model.*;
+package model;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 
 public class ResumeTestData {
+
+    public static void main(String[] args) {
+        ResumeTestData rtd = new ResumeTestData();
+        rtd.createResume("uuid1", "name1");
+    }
 
     public Resume createResume(String uuid, String fullName) {
         Resume resume = new Resume(uuid, fullName);
