@@ -20,10 +20,25 @@ public class MainFile {
             }
         }
 
+        printFiles(dir);
+
         try (FileInputStream fis = new FileInputStream(filePath)) {
             System.out.println(fis.read());
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+
+
+    }
+
+    private static void printFiles(File dir) {
+        File[] list = dir.listFiles();
+        if (list == null) return;
+        for (File item : list) {
+            if (item.isDirectory()) {
+                printFiles(item);
+            }
+            System.out.println(item);
         }
     }
 }
