@@ -5,12 +5,13 @@ import model.Resume;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public abstract class AbstractFileStorage extends AbstractStorage<File>{
 
-    private File directory;
+    private final File directory;
 
     protected AbstractFileStorage(File directory) {
         Objects.requireNonNull(directory, "directory must not be null");
@@ -25,15 +26,22 @@ public abstract class AbstractFileStorage extends AbstractStorage<File>{
 
     @Override
     public void clear() {
-        File[] list = directory.listFiles();
-        for(File file : list) {
+        File[] listFiles = directory.listFiles();
+        if (listFiles == null) {
+            throw new StorageException("Directory is empty. No resumes.", "");
+        }
+        for(File file : listFiles) {
             file.delete();
         }
     }
 
     @Override
     public int size() {
-        return directory.list().length;
+        List list = List.of(directory);
+        if (list == null) {
+            throw new StorageException("Directory is empty. No resumes.", "");
+        }
+        return list.size();
     }
 
     @Override
@@ -80,13 +88,17 @@ public abstract class AbstractFileStorage extends AbstractStorage<File>{
 
     @Override
     protected void doDelete(File file) {
-        file.delete();
+        if (!file.delete()) {
+            throw new StorageException("IO error", file.getName());
+        }
     }
 
     @Override
     protected List<Resume> doCopyAll() {
-        return doReadAll();
+        List<Resume> resumes = new ArrayList();
+        for(File file : directory.listFiles()) {
+            resumes.add(doGet(file));
+        }
+        return resumes;
     }
-
-    protected abstract List<Resume> doReadAll();
 }
