@@ -31,17 +31,17 @@ public abstract class AbstractFileStorage extends AbstractStorage<File>{
             throw new StorageException("Directory is empty. No resumes.", "");
         }
         for(File file : listFiles) {
-            file.delete();
+            doDelete(file);
         }
     }
 
     @Override
     public int size() {
-        List list = List.of(directory);
-        if (list == null) {
+        File[] listFiles = directory.listFiles();
+        if (listFiles == null) {
             throw new StorageException("Directory is empty. No resumes.", "");
         }
-        return list.size();
+        return listFiles.length;
     }
 
     @Override
@@ -73,8 +73,6 @@ public abstract class AbstractFileStorage extends AbstractStorage<File>{
         }
     }
 
-    protected abstract void doWrite (Resume r, File file) throws IOException;
-
     @Override
     protected Resume doGet(File file) {
         try {
@@ -83,8 +81,6 @@ public abstract class AbstractFileStorage extends AbstractStorage<File>{
             throw new StorageException("IO error", file.getName(), e);
         }
     }
-
-    protected abstract Resume doRead (File file) throws IOException;
 
     @Override
     protected void doDelete(File file) {
@@ -95,10 +91,18 @@ public abstract class AbstractFileStorage extends AbstractStorage<File>{
 
     @Override
     protected List<Resume> doCopyAll() {
+        File[] listFiles = directory.listFiles();
+        if (listFiles == null) {
+            throw new StorageException("Directory is empty. No resumes.", "");
+        }
         List<Resume> resumes = new ArrayList();
         for(File file : directory.listFiles()) {
             resumes.add(doGet(file));
         }
         return resumes;
     }
+
+    protected abstract void doWrite (Resume r, File file) throws IOException;
+
+    protected abstract Resume doRead (File file) throws IOException;
 }
