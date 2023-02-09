@@ -20,25 +20,28 @@ public class MainFile {
             }
         }
 
-        printFiles(dir);
-
         try (FileInputStream fis = new FileInputStream(filePath)) {
             System.out.println(fis.read());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-
+        printDirectoryDeeply(dir);
     }
 
-    private static void printFiles(File dir) {
-        File[] list = dir.listFiles();
-        if (list == null) return;
-        for (File item : list) {
-            if (item.isDirectory()) {
-                printFiles(item);
+    // TODO: make pretty output
+    public static void printDirectoryDeeply(File dir) {
+        File[] files = dir.listFiles();
+
+        if (files != null) {
+            for (File file : files) {
+                if (file.isFile()) {
+                    System.out.println("File: " + file.getName());
+                } else if (file.isDirectory()) {
+                    System.out.println("Directory: " + file.getName());
+                    printDirectoryDeeply(file);
+                }
             }
-            System.out.println(item);
         }
     }
 }
