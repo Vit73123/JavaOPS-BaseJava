@@ -70,10 +70,6 @@ public abstract class AbstractFileStorage extends AbstractStorage<File>{
         doUpdate(r, file);
     }
 
-    protected abstract void doWrite(Resume r, OutputStream file) throws IOException;
-
-    protected abstract Resume doRead(InputStream file) throws IOException;
-
     @Override
     protected Resume doGet(File file) {
         try {
@@ -102,4 +98,8 @@ public abstract class AbstractFileStorage extends AbstractStorage<File>{
         }
         return list;
     }
+
+    protected abstract void doWrite(Resume r, OutputStream file) throws IOException;
+
+    protected abstract Resume doRead(InputStream file) throws IOException;
 }
