@@ -93,10 +93,6 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path>{
         return list;
     }
 
-    protected abstract void doWrite(Resume r, OutputStream Path) throws IOException;
-
-    protected abstract Resume doRead(InputStream Path) throws IOException;
-
     private Stream<Path> getFiles() {
         Stream<Path> files;
         try {
@@ -106,4 +102,8 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path>{
         }
         return files;
     }
+
+    protected abstract void doWrite(Resume r, OutputStream Path) throws IOException;
+
+    protected abstract Resume doRead(InputStream Path) throws IOException;
 }
