@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 public abstract class AbstractPathStorage extends AbstractStorage<Path>{
 
@@ -27,25 +28,17 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path>{
 
     @Override
     public void clear() {
-        try {
-            Files.list(directory).forEach(this::doDelete);
-        } catch (IOException e) {
-            throw new StorageException("File delete error", null);
-        }
+        getFiles().forEach(this::doDelete);
     }
 
     @Override
     public int size() {
-        try {
-            return (int) Files.list(directory).count();
-        } catch (IOException e) {
-            throw new StorageException("Directory read error", null);
-        }
+        return (int) getFiles().count();
     }
 
     @Override
     protected Path getSearchKey(String uuid) {
-        return Paths.get(directory.toString(), uuid);
+        return directory.resolve(uuid);
     }
 
     @Override
@@ -86,20 +79,15 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path>{
         try {
             Files.deleteIfExists(path);
         } catch (IOException e) {
-            throw new StorageException("Path delete error", path.toString());
+            throw new StorageException("File delete error", path.toString());
         }
     }
 
     @Override
     protected List<Resume> doCopyAll() {
-        DirectoryStream<Path> files;
-        try {
-            files = Files.newDirectoryStream(directory);
-        } catch (IOException e) {
-            throw new StorageException("Directory read error", null);
-        }
+        Stream<Path> files = getFiles();
         List<Resume> list = new ArrayList<>(size());
-        for(Path file : files) {
+        for(Path file : files.toList()) {
             list.add(doGet(file));
         }
         return list;
@@ -108,4 +96,14 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path>{
     protected abstract void doWrite(Resume r, OutputStream Path) throws IOException;
 
     protected abstract Resume doRead(InputStream Path) throws IOException;
+
+    private Stream<Path> getFiles() {
+        Stream<Path> files;
+        try {
+            files = Files.list(directory);
+        } catch (IOException e) {
+            throw new StorageException("Directory read error", null);
+        }
+        return files;
+    }
 }
