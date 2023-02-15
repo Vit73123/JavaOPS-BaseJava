@@ -6,10 +6,10 @@ import model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import storage.stream.ObjectStreamSerializer;
+import storage.stream.Strategy;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public abstract class AbstractStorageTest {
 
     protected static final File STORAGE_DIR = new File("BaseJava\\storage");
+    protected static final Strategy SERIALIZER = new ObjectStreamSerializer();
 
     protected final Storage storage;
 

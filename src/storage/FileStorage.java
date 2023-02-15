@@ -1,19 +1,19 @@
-package storage.stream;
+package storage;
 
 import exception.StorageException;
 import model.Resume;
-import storage.AbstractStorage;
+import storage.stream.Strategy;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class FileStorage extends AbstractStorage<File> {
+public class FileStorage extends AbstractStorage<File> {
 
-    private File directory;
+    private final File directory;
 
-    Strategy serializer;
+    private final Strategy serializer;
 
     protected FileStorage(File directory, Strategy serializer) {
         Objects.requireNonNull(directory, "directory must not be null");

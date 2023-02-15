@@ -2,9 +2,11 @@ package storage;
 
 import exception.StorageException;
 import model.Resume;
+import storage.stream.Strategy;
 
-import java.io.*;
-import java.nio.file.DirectoryStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -13,17 +15,20 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-public abstract class AbstractPathStorage extends AbstractStorage<Path>{
+public class PathStorage extends AbstractStorage<Path> {
 
-    private Path directory;
+    private final Path directory;
 
-    protected AbstractPathStorage(String  dir) {
-        directory = Paths.get(dir);
-        Objects.requireNonNull(directory, "directory must not be null");
-        if (!Files.isDirectory(directory) || !Files.isWritable(directory)) {
+    private final Strategy serializer;
+
+    protected PathStorage(String  dir, Strategy serializer) {
+        Path path = Paths.get(dir);
+        Objects.requireNonNull(path, "directory must not be null");
+        if (!Files.isDirectory(path) || !Files.isWritable(path)) {
             throw new IllegalArgumentException(dir + " is not directory or is not writable");
         }
-        this.directory = directory;
+        this.directory = path;
+        this.serializer = serializer;
     }
 
     @Override
@@ -103,7 +108,11 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path>{
         return files;
     }
 
-    protected abstract void doWrite(Resume r, OutputStream Path) throws IOException;
+    public void doWrite(Resume r, OutputStream os) throws IOException {
+        serializer.doWrite(r, os);
+    }
 
-    protected abstract Resume doRead(InputStream Path) throws IOException;
+    public Resume doRead(InputStream is) throws IOException {
+        return serializer.doRead(is);
+    }
 }
