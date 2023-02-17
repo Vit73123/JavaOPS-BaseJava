@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class AbstractPathStorage extends AbstractStorage<Path>{
+public abstract class AbstractPathStorage { /* extends AbstractStorage<Path>{
     private Path directory;
 
     protected AbstractPathStorage(String  dir) {
@@ -101,5 +101,5 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path>{
             list.add(doGet((Path)));
         }
         return list;
-    }
+    } */
 }
