@@ -3,6 +3,7 @@ package storage;
 
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
+import util.JsonParser;
 
 @Suite
 @SelectClasses(
@@ -14,7 +15,8 @@ import org.junit.platform.suite.api.Suite;
                 MapUuidStorageTest.class,
                 ObjectFileStorageTest.class,
                 ObjectPathStorageTest.class,
-                XmlPathStorageTest.class
+                XmlPathStorageTest.class,
+                JsonPathStorageTest.class
         })
 
 public class AllStorageTest {
