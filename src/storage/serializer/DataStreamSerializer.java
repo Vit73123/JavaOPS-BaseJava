@@ -34,40 +34,46 @@ public class DataStreamSerializer implements StreamSerializer {
             Map<SectionType, Section> sections = r.getSections();
             dos.writeInt(sections.size());
             for(Map.Entry<SectionType, Section> section : sections.entrySet()) {
-                dos.writeUTF(section.getKey().name());
+                SectionType sectionType = section.getKey();
+                dos.writeUTF(sectionType.name());
 //                System.out.println(entry.getValue().getClass().getSimpleName());
-                switch (section.getValue().getClass().getSimpleName()) {
-                    case "TextSection":
-                        dos.writeUTF("TextSection");
-                        dos.writeUTF(((TextSection) section.getValue()).getContent());
-                        break;
-                    case "OrganizationSection":
-                        dos.writeUTF("OrganizationSection");
+                switch (sectionType) {
+                    case OBJECTIVE, PERSONAL -> {
+                            dos.writeUTF(getStringWrite(((TextSection) section.getValue()).getContent()));
+                    }
+                    case EXPERIENCE, EDUCATION -> {
                         List<Organization> organizations = ((OrganizationSection) section.getValue()).getOrganizations();
                         dos.writeInt(organizations.size());
-                        for(Organization organization : organizations) {
-                            dos.writeUTF((organization.getHomePage().getName()));
-                            dos.writeUTF((organization.getHomePage().getUrl()));
+                        for (Organization organization : organizations) {
+                                dos.writeUTF(getStringWrite((organization.getHomePage().getName())));
+                                dos.writeUTF(getStringWrite((organization.getHomePage().getUrl())));
                             List<Organization.Position> positions = organization.getPositions();
                             dos.writeInt(positions.size());
-                            for(Organization.Position position : organization.getPositions()) {
+                            for (Organization.Position position : organization.getPositions()) {
                                 dos.writeUTF(position.getStartDate().toString());
                                 dos.writeUTF(position.getEndDate().toString());
-                                dos.writeUTF(position.getTitle());
-                                dos.writeUTF(position.getDescription());
+                                dos.writeUTF(getStringWrite(position.getTitle()));
+                                dos.writeUTF(getStringWrite(position.getDescription()));
                             }
                         }
-                        break;
-                    case "ListSection":
-                        dos.writeUTF("ListSection");
+                    }
+                    case ACHIEVEMENT, QUALIFICATIONS -> {
                         List<String> list = ((ListSection) section.getValue()).getItems();
                         dos.writeInt(list.size());
-                        for(String item : list) {
+                        for (String item : list) {
                             dos.writeUTF(item);
                         }
-                        break;
+                    }
                 }
             }
+        }
+    }
+
+    private String getStringWrite(String str) {
+        if (str == null) {
+            return "";
+        } else {
+            return str;
         }
     }
 
@@ -85,40 +91,47 @@ public class DataStreamSerializer implements StreamSerializer {
             size = dis.readInt();
             for (int i = 0; i < size; i++) {
                 SectionType sectionType = valueOf(dis.readUTF());
-                String section = dis.readUTF();
-                switch (section) {
-                    case "TextSection":
-                        resume.addSection(sectionType, new TextSection(dis.readUTF()));
-                        break;
-                    case "OrganizationSection":
+                switch (sectionType) {
+                    case PERSONAL, OBJECTIVE -> {
+                        resume.addSection(sectionType, new TextSection(getStringRead(dis.readUTF())));
+                    }
+                    case EXPERIENCE, EDUCATION -> {
                         int orgSize = dis.readInt();
                         List<Organization> organizations = new ArrayList<>();
                         List<Organization.Position> positions = new ArrayList<>();
                         for (int j = 0; j < orgSize; j++) {
-                            Link homePage = new Link(dis.readUTF(), dis.readUTF());
+                            Link homePage = new Link(getStringRead(dis.readUTF()), getStringRead(dis.readUTF()));
                             int posSize = dis.readInt();
-                            for(int k = 0; k < posSize; k++) {
+                            for (int k = 0; k < posSize; k++) {
                                 positions.add(new Organization.Position(
                                         LocalDate.parse(dis.readUTF(), dateTimeFormatter),
                                         LocalDate.parse(dis.readUTF(), dateTimeFormatter),
-                                        dis.readUTF(),
-                                        dis.readUTF()));
+                                        getStringRead(dis.readUTF()),
+                                        getStringRead(dis.readUTF())));
                             }
                             organizations.add(new Organization(homePage, positions));
                         }
                         resume.addSection(sectionType, new OrganizationSection(organizations));
-                        break;
-                    case "ListSection":
+                    }
+                    case ACHIEVEMENT, QUALIFICATIONS -> {
                         int listSize = dis.readInt();
                         List<String> list = new ArrayList<>();
                         for (int j = 0; j < listSize; j++) {
                             list.add(dis.readUTF());
                         }
                         resume.addSection(sectionType, new ListSection(list));
-                        break;
+                    }
                 }
             }
             return resume;
+        }
+    }
+
+    private String getStringRead(String str) {
+        if (str.isEmpty()) {
+            return null;
+        } else {
+            return str;
         }
     }
 }
