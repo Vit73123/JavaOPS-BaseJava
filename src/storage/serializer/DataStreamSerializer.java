@@ -22,59 +22,50 @@ public class DataStreamSerializer implements StreamSerializer {
 
     @Override
     public void doWrite(Resume r, OutputStream os) throws IOException {
-        try(DataOutputStream dos = new DataOutputStream(os)) {
+        try (DataOutputStream dos = new DataOutputStream(os)) {
             dos.writeUTF(r.getUuid());
             dos.writeUTF(r.getFullName());
             Map<ContactType, String> contacts = r.getContacts();
 
-            writeWithException(contacts.entrySet(), dos, () -> {
-                dos.writeUTF(entry.getKey().name());
-                dos.writeUTF(entry.getValue());
+            writeWithException(contacts.entrySet(), dos, contact -> {
+                dos.writeUTF(contact.getKey().name());
+                dos.writeUTF(contact.getValue());
             });
 
-/*
-            dos.writeInt(contacts.size());
-            for(Map.Entry<ContactType, String> entry : contacts.entrySet()) {
-                dos.writeUTF(entry.getKey().name());
-                dos.writeUTF(entry.getValue());
-            }
-*/
             // TODO implements sections
             Map<SectionType, Section> sections = r.getSections();
             dos.writeInt(sections.size());
-            for(Map.Entry<SectionType, Section> section : sections.entrySet()) {
+
+            writeWithException(sections.entrySet(), dos, section -> {
                 SectionType sectionType = section.getKey();
                 dos.writeUTF(sectionType.name());
 //                System.out.println(entry.getValue().getClass().getSimpleName());
                 switch (sectionType) {
                     case OBJECTIVE, PERSONAL -> {
-                            dos.writeUTF(getStringWrite(((TextSection) section.getValue()).getContent()));
+                        dos.writeUTF(getStringWrite(((TextSection) section.getValue()).getContent()));
                     }
                     case EXPERIENCE, EDUCATION -> {
                         List<Organization> organizations = ((OrganizationSection) section.getValue()).getOrganizations();
-                        dos.writeInt(organizations.size());
-                        for (Organization organization : organizations) {
-                                dos.writeUTF(getStringWrite((organization.getHomePage().getName())));
-                                dos.writeUTF(getStringWrite((organization.getHomePage().getUrl())));
+                        writeWithException(organizations, dos, organization -> {
+                            dos.writeUTF(getStringWrite((organization.getHomePage().getName())));
+                            dos.writeUTF(getStringWrite((organization.getHomePage().getUrl())));
                             List<Organization.Position> positions = organization.getPositions();
-                            dos.writeInt(positions.size());
-                            for (Organization.Position position : organization.getPositions()) {
+                            writeWithException(positions, dos, position -> {
                                 dos.writeUTF(position.getStartDate().toString());
                                 dos.writeUTF(position.getEndDate().toString());
                                 dos.writeUTF(getStringWrite(position.getTitle()));
                                 dos.writeUTF(getStringWrite(position.getDescription()));
-                            }
-                        }
+                            });
+                        });
                     }
                     case ACHIEVEMENT, QUALIFICATIONS -> {
                         List<String> list = ((ListSection) section.getValue()).getItems();
-                        dos.writeInt(list.size());
-                        for (String item : list) {
+                        writeWithException(list, dos, item -> {
                             dos.writeUTF(item);
-                        }
+                        });
                     }
                 }
-            }
+            });
         }
     }
 
@@ -85,15 +76,6 @@ public class DataStreamSerializer implements StreamSerializer {
             writeConsumer.write(t);
         }
     }
-
-/*
-    private void forEach (Map<ContactType, String> contacts, DataOutputStream dos) throws IOException {
-        for(Map.Entry<ContactType, String> contact: contacts.entrySet()) {
-            dos.writeUTF(contact.getKey().name());
-            dos.writeUTF(contact.getValue());
-        }
-    }
-*/
 
     private String getStringWrite(String str) {
         if (str == null) {
