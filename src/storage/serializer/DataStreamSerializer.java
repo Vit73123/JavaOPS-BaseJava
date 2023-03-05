@@ -6,6 +6,7 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -26,10 +27,21 @@ public class DataStreamSerializer implements StreamSerializer {
             dos.writeUTF(r.getFullName());
             Map<ContactType, String> contacts = r.getContacts();
             dos.writeInt(contacts.size());
+
+            writeWitheException(contacts, dos, () -> {
+                dos.writeUTF(entry.getKey().name());
+                dos.writeUTF(entry.getValue());
+            });
+
+/*
+            forEach(contacts, dos);
+*/
+/*
             for(Map.Entry<ContactType, String> entry : contacts.entrySet()) {
                 dos.writeUTF(entry.getKey().name());
                 dos.writeUTF(entry.getValue());
             }
+*/
             // TODO implements sections
             Map<SectionType, Section> sections = r.getSections();
             dos.writeInt(sections.size());
@@ -68,6 +80,21 @@ public class DataStreamSerializer implements StreamSerializer {
             }
         }
     }
+
+    private void writeWitheException (Collection c, DataOutputStream dos, WriteConsumer wc) throws IOException {
+        for(var item: c) {
+            wc.write(item);
+        }
+    }
+
+/*
+    private void forEach (Map<ContactType, String> contacts, DataOutputStream dos) throws IOException {
+        for(Map.Entry<ContactType, String> contact: contacts.entrySet()) {
+            dos.writeUTF(contact.getKey().name());
+            dos.writeUTF(contact.getValue());
+        }
+    }
+*/
 
     private String getStringWrite(String str) {
         if (str == null) {
