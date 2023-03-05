@@ -1,8 +1,9 @@
 package storage.serializer;
 
-import java.util.Collection;
+import java.io.IOException;
 
-public interface WriteConsumer<T extends Collection> {
+@FunctionalInterface
+public interface WriteConsumer<T> {
 
-    void write(T item);
+    void write(T item) throws IOException;
 }

@@ -26,17 +26,14 @@ public class DataStreamSerializer implements StreamSerializer {
             dos.writeUTF(r.getUuid());
             dos.writeUTF(r.getFullName());
             Map<ContactType, String> contacts = r.getContacts();
-            dos.writeInt(contacts.size());
 
-            writeWitheException(contacts, dos, () -> {
+            writeWithException(contacts.entrySet(), dos, () -> {
                 dos.writeUTF(entry.getKey().name());
                 dos.writeUTF(entry.getValue());
             });
 
 /*
-            forEach(contacts, dos);
-*/
-/*
+            dos.writeInt(contacts.size());
             for(Map.Entry<ContactType, String> entry : contacts.entrySet()) {
                 dos.writeUTF(entry.getKey().name());
                 dos.writeUTF(entry.getValue());
@@ -81,9 +78,11 @@ public class DataStreamSerializer implements StreamSerializer {
         }
     }
 
-    private void writeWitheException (Collection c, DataOutputStream dos, WriteConsumer wc) throws IOException {
-        for(var item: c) {
-            wc.write(item);
+    private <T> void writeWithException (Collection<T> collection, DataOutputStream dos, WriteConsumer<T> writeConsumer)
+            throws IOException {
+        dos.writeInt(collection.size());
+        for(T t: collection) {
+            writeConsumer.write(t);
         }
     }
 
