@@ -88,50 +88,54 @@ public class DataStreamSerializer implements StreamSerializer {
     @Override
     public Resume doRead(InputStream is) throws IOException {
         try (DataInputStream dis = new DataInputStream(is)) {
+
             String uuid = dis.readUTF();
             String fullName = dis.readUTF();
             Resume resume = new Resume(uuid, fullName);
-            int size = dis.readInt();
-            for (int i = 0; i < size; i++) {
-                resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF());
-            }
+            readWithException(resume, dis, resumeItem -> {
+                    ((Resume) resumeItem).addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF());
+                });
             // TODO implements sections
-            size = dis.readInt();
-            for (int i = 0; i < size; i++) {
+            readWithException(resume, dis, resumeItem -> {
                 SectionType sectionType = valueOf(dis.readUTF());
                 switch (sectionType) {
                     case PERSONAL, OBJECTIVE -> {
-                        resume.addSection(sectionType, new TextSection(getStringRead(dis.readUTF())));
+                        ((Resume) resumeItem).addSection(sectionType, new TextSection(getStringRead(dis.readUTF())));
                     }
                     case EXPERIENCE, EDUCATION -> {
-                        int orgSize = dis.readInt();
                         List<Organization> organizations = new ArrayList<>();
-                        List<Organization.Position> positions = new ArrayList<>();
-                        for (int j = 0; j < orgSize; j++) {
+                        readWithException(organizations, dis, organizationItems -> {
                             Link homePage = new Link(getStringRead(dis.readUTF()), getStringRead(dis.readUTF()));
-                            int posSize = dis.readInt();
-                            for (int k = 0; k < posSize; k++) {
-                                positions.add(new Organization.Position(
-                                        LocalDate.parse(dis.readUTF(), dateTimeFormatter),
-                                        LocalDate.parse(dis.readUTF(), dateTimeFormatter),
-                                        getStringRead(dis.readUTF()),
-                                        getStringRead(dis.readUTF())));
-                            }
-                            organizations.add(new Organization(homePage, positions));
-                        }
-                        resume.addSection(sectionType, new OrganizationSection(organizations));
+                            List<Organization.Position> positions = new ArrayList<>();
+                            readWithException(positions, dis, positionItems -> {
+                                    ((List<Organization.Position>) positionItems).add(new Organization.Position(
+                                            LocalDate.parse(dis.readUTF(), dateTimeFormatter),
+                                            LocalDate.parse(dis.readUTF(), dateTimeFormatter),
+                                            getStringRead(dis.readUTF()),
+                                            getStringRead(dis.readUTF())));
+                            });
+                            ((List<Organization>) organizationItems).add(new Organization(homePage, positions));
+                        });
+                        ((Resume) resumeItem).addSection(sectionType, new OrganizationSection(organizations));
                     }
                     case ACHIEVEMENT, QUALIFICATIONS -> {
-                        int listSize = dis.readInt();
                         List<String> list = new ArrayList<>();
-                        for (int j = 0; j < listSize; j++) {
-                            list.add(dis.readUTF());
-                        }
-                        resume.addSection(sectionType, new ListSection(list));
+                        readWithException(list, dis, listItems -> {
+                            ((List<String>) list).add(dis.readUTF());
+                        });
+                        ((Resume) resumeItem).addSection(sectionType, new ListSection(list));
                     }
                 }
-            }
+            });
             return resume;
+        }
+    }
+
+    private void readWithException (Object item, DataInputStream dis, ReadConsumer readConsumer)
+            throws IOException {
+        int size = dis.readInt();
+        for(int i = 0; i < size; i++) {
+            readConsumer.read(item);
         }
     }
 
