@@ -60,9 +60,7 @@ public class DataStreamSerializer implements StreamSerializer {
                     }
                     case ACHIEVEMENT, QUALIFICATIONS -> {
                         List<String> list = ((ListSection) section.getValue()).getItems();
-                        writeWithException(list, dos, item -> {
-                            dos.writeUTF(item);
-                        });
+                        writeWithException(list, dos, dos::writeUTF);
                     }
                 }
             });
@@ -92,38 +90,38 @@ public class DataStreamSerializer implements StreamSerializer {
             String uuid = dis.readUTF();
             String fullName = dis.readUTF();
             Resume resume = new Resume(uuid, fullName);
-            readWithException(resume, dis, resumeItem -> {
-                    ((Resume) resumeItem).addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF());
+            readWithException(dis, () -> {
+                    resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF());
                 });
             // TODO implements sections
-            readWithException(resume, dis, resumeItem -> {
+            readWithException(dis, () -> {
                 SectionType sectionType = valueOf(dis.readUTF());
                 switch (sectionType) {
                     case PERSONAL, OBJECTIVE -> {
-                        ((Resume) resumeItem).addSection(sectionType, new TextSection(getStringRead(dis.readUTF())));
+                        resume.addSection(sectionType, new TextSection(getStringRead(dis.readUTF())));
                     }
                     case EXPERIENCE, EDUCATION -> {
                         List<Organization> organizations = new ArrayList<>();
-                        readWithException(organizations, dis, organizationItems -> {
+                        readWithException(dis, () -> {
                             Link homePage = new Link(getStringRead(dis.readUTF()), getStringRead(dis.readUTF()));
                             List<Organization.Position> positions = new ArrayList<>();
-                            readWithException(positions, dis, positionItems -> {
-                                    ((List<Organization.Position>) positionItems).add(new Organization.Position(
+                            readWithException(dis, () -> {
+                                    positions.add(new Organization.Position(
                                             LocalDate.parse(dis.readUTF(), dateTimeFormatter),
                                             LocalDate.parse(dis.readUTF(), dateTimeFormatter),
                                             getStringRead(dis.readUTF()),
                                             getStringRead(dis.readUTF())));
                             });
-                            ((List<Organization>) organizationItems).add(new Organization(homePage, positions));
+                            organizations.add(new Organization(homePage, positions));
                         });
-                        ((Resume) resumeItem).addSection(sectionType, new OrganizationSection(organizations));
+                        resume.addSection(sectionType, new OrganizationSection(organizations));
                     }
                     case ACHIEVEMENT, QUALIFICATIONS -> {
                         List<String> list = new ArrayList<>();
-                        readWithException(list, dis, listItems -> {
-                            ((List<String>) list).add(dis.readUTF());
+                        readWithException(dis, () -> {
+                            list.add(dis.readUTF());
                         });
-                        ((Resume) resumeItem).addSection(sectionType, new ListSection(list));
+                        resume.addSection(sectionType, new ListSection(list));
                     }
                 }
             });
@@ -131,11 +129,11 @@ public class DataStreamSerializer implements StreamSerializer {
         }
     }
 
-    private void readWithException (Object item, DataInputStream dis, ReadConsumer readConsumer)
+    private void readWithException (DataInputStream dis, ReadConsumer readConsumer)
             throws IOException {
         int size = dis.readInt();
         for(int i = 0; i < size; i++) {
-            readConsumer.read(item);
+            readConsumer.read();
         }
     }
 
