@@ -1,9 +1,12 @@
+import util.LazySingleton;
+
 import java.util.ArrayList;
 
 public class MainConcurrency {
 
     public static final int THREADS_NUMBER = 10_000;
-    private static int counter;
+//    private static int counter;
+    private static volatile int counter;
 //    private static final Object LOCK = new Object();
 
     public static void main(String[] args) throws InterruptedException {
@@ -59,19 +62,20 @@ public class MainConcurrency {
         });
 
 //        Thread.sleep(500);
-        System.out.println(counter);
+//        System.out.println(counter);
+        System.out.println(mainConcurrency.counter);
 
 //        new MainConcurrency().inc();
     }
 
 //    private static void inc() {
 //    private static synchronized void inc() {
-//    private void inc() {
-    private synchronized void inc() {
+    private void inc() {
+//    private synchronized void inc() {
 
 //        synchronized (LOCK) {
 //        synchronized (MainConcurrency.class) {
-        double a = Math.sin(13.);
+//        double a = Math.sin(13.);
 //        try {
 //            synchronized (this) {
                 counter++;
