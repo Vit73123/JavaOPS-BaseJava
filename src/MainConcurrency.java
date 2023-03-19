@@ -36,6 +36,7 @@ public class MainConcurrency {
 
         final MainConcurrency mainConcurrency = new MainConcurrency();
         List<Thread> threads = new ArrayList<>(THREADS_NUMBER);
+
         for (int i = 0; i < THREADS_NUMBER; i++) {
             Thread thread = new Thread(() -> {
                 for (int j = 0; j < 100; j++) {
