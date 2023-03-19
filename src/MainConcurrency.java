@@ -1,13 +1,11 @@
-import util.LazySingleton;
-
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainConcurrency {
 
     public static final int THREADS_NUMBER = 10_000;
-//    private static int counter;
-    private static volatile int counter;
-//    private static final Object LOCK = new Object();
+    private int counter;
+    private static final Object LOCK = new Object();
 
     public static void main(String[] args) throws InterruptedException {
         System.out.println(Thread.currentThread().getName());
@@ -19,29 +17,25 @@ public class MainConcurrency {
         };
         thread0.start();
 
-        new Thread(() -> {
-            System.out.println(Thread.currentThread().getName() + ", " +
-                    Thread.currentThread().getState());
-        }).start();
+        new Thread(new Runnable() {
 
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                System.out.println(Thread.currentThread().getName() + ", " +
-//                        Thread.currentThread().getState());
-//                }
-//
-//            private void inc() {
-//                synchronized (this) {
+            @Override
+            public void run() {
+                System.out.println(Thread.currentThread().getName() + ", " +
+                        Thread.currentThread().getState());
+                }
+
+            private void inc() {
+                synchronized (this) {
 //                    counter++;
-//                }
-//            }
-//        });
+                }
+            }
+        }).start();
 
         System.out.println(thread0.getState());
 
         final MainConcurrency mainConcurrency = new MainConcurrency();
-        ArrayList<Thread> threads = new ArrayList<>();
+        List<Thread> threads = new ArrayList<>(THREADS_NUMBER);
         for (int i = 0; i < THREADS_NUMBER; i++) {
             Thread thread = new Thread(() -> {
                 for (int j = 0; j < 100; j++) {
@@ -60,33 +54,18 @@ public class MainConcurrency {
                 throw new RuntimeException(e);
             }
         });
-
-//        Thread.sleep(500);
-//        System.out.println(counter);
         System.out.println(mainConcurrency.counter);
-
-//        new MainConcurrency().inc();
     }
 
-//    private static void inc() {
-//    private static synchronized void inc() {
-    private void inc() {
-//    private synchronized void inc() {
+    private synchronized void inc() {
 
-//        synchronized (LOCK) {
+//        synchronized (this) {
 //        synchronized (MainConcurrency.class) {
-//        double a = Math.sin(13.);
-//        try {
-//            synchronized (this) {
-                counter++;
+            counter++;
 //                wait();
-//                notify();
-//                notifyAll();
 //                readFile
 //                ...
 //            }
-//        } catch (InterruptedException e) {
-//            throw new RuntimeException(e);
 //        }
     }
 }
