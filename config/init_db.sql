@@ -16,6 +16,6 @@ create table contact
     value       text not null
 );
 
-create unique index contact_uuid_type_index
-    on contact (resume_uuid, type);
+create unique index contact_uuid_id_index
+    on public.contact (id, resume_uuid, type);
 
