@@ -1,5 +1,6 @@
 package basejava.storage;
 
+import basejava.Config;
 import basejava.exception.ExistStorageException;
 import basejava.exception.NotExistStorageException;
 import basejava.model.*;
@@ -17,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class AbstractStorageTest {
 
-    protected static final File STORAGE_DIR = new File("storage");
+    protected static final File STORAGE_DIR = Config.get().getStorageDir();
 
     protected final Storage storage;
 
