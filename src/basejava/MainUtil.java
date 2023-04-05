@@ -1,4 +1,4 @@
-package basejava.storage;
+package basejava;
 
 public class MainUtil {
 
