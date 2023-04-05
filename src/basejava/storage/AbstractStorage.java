@@ -2,7 +2,7 @@ package basejava.storage;
 
 import basejava.exception.ExistStorageException;
 import basejava.exception.NotExistStorageException;
-import basejava.exception.model.Resume;
+import basejava.model.Resume;
 
 import java.util.Collections;
 import java.util.List;

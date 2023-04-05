@@ -1,7 +1,7 @@
 package basejava.storage;
 
 import basejava.exception.StorageException;
-import basejava.exception.model.Resume;
+import basejava.model.Resume;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

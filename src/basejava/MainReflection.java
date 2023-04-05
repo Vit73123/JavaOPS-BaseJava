@@ -1,6 +1,6 @@
 package basejava;
 
-import basejava.exception.model.Resume;
+import basejava.model.Resume;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

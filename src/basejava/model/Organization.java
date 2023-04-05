@@ -1,6 +1,6 @@
-package basejava.exception.model;
+package basejava.model;
 
-import basejava.exception.util.LocalDateAdapter;
+import basejava.util.LocalDateAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -13,8 +13,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import static basejava.exception.util.DateUtil.NOW;
-import static basejava.exception.util.DateUtil.of;
+import static basejava.util.DateUtil.NOW;
+import static basejava.util.DateUtil.of;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Organization implements Serializable {

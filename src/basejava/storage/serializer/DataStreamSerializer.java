@@ -1,6 +1,6 @@
 package basejava.storage.serializer;
 
-import basejava.exception.model.*;
+import basejava.model.*;
 
 import java.io.*;
 import java.time.LocalDate;

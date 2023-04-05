@@ -1,8 +1,8 @@
-package basejava.exception.util;
+package basejava.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import basejava.exception.model.Section;
+import basejava.model.Section;
 
 import java.io.Reader;
 import java.io.Writer;

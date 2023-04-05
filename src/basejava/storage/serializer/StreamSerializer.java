@@ -1,6 +1,6 @@
 package basejava.storage.serializer;
 
-import basejava.exception.model.Resume;
+import basejava.model.Resume;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,7 +1,7 @@
 package basejava.storage.serializer;
 
-import basejava.exception.model.*;
-import basejava.exception.util.XmlParser;
+import basejava.util.XmlParser;
+import basejava.model.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;

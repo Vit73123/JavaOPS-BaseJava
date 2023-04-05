@@ -1,4 +1,4 @@
-package basejava.exception.model;
+package basejava.model;
 
 public enum ContactType {
 

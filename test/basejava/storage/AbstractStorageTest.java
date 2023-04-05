@@ -3,7 +3,7 @@ package basejava.storage;
 import basejava.Config;
 import basejava.exception.ExistStorageException;
 import basejava.exception.NotExistStorageException;
-import basejava.exception.model.*;
+import basejava.model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package basejava.exception.model;
+package basejava.model;
 
 import java.time.Month;
 import java.util.Arrays;

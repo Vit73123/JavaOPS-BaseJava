@@ -1,6 +1,6 @@
 package basejava;
 
-import basejava.exception.model.Resume;
+import basejava.model.Resume;
 import basejava.storage.ArrayStorage;
 import basejava.storage.Storage;
 

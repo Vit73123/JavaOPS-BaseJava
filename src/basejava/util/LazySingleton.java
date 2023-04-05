@@ -1,4 +1,4 @@
-package basejava.exception.util;
+package basejava.util;
 
 public class LazySingleton {
 

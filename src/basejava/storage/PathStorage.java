@@ -1,7 +1,7 @@
 package basejava.storage;
 
 import basejava.exception.StorageException;
-import basejava.exception.model.Resume;
+import basejava.model.Resume;
 import basejava.storage.serializer.StreamSerializer;
 
 import java.io.*;

@@ -1,7 +1,7 @@
 package basejava.storage.serializer;
 
-import basejava.exception.model.Resume;
-import basejava.exception.util.JsonParser;
+import basejava.model.Resume;
+import basejava.util.JsonParser;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
