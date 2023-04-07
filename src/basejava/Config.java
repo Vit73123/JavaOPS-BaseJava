@@ -25,6 +25,10 @@ public class Config {
         return INSTANCE;
     }
 
+    public String getProperty(String property) {
+        return props.getProperty(property);
+    }
+
     public File getStorageDir() {
         return storageDir;
     }
