@@ -20,6 +20,10 @@ public abstract class AbstractStorageTest {
 
     protected static final File STORAGE_DIR = Config.get().getStorageDir();
 
+    protected static final String DB_URL = Config.get().getProperty("db.url");
+    protected static final String DB_USER = Config.get().getProperty("db.user");
+    protected static final String DB_PASSWORD = Config.get().getProperty("db.password");
+
     protected final Storage storage;
 
     private static final int INITIAL_SIZE = 3;
@@ -40,12 +44,12 @@ public abstract class AbstractStorageTest {
         R3 = new Resume(UUID_3, "Name3");
         R4 = new Resume(UUID_4, "Name4");
 
+/*
         R1.addContact(ContactType.MAIL, "mail@ya.ru");
         R1.addContact(ContactType.PHONE, "11111");
         R2.addContact(ContactType.SKYPE, "skype2");
         R2.addContact(ContactType.PHONE, "22222");
 
-/*
         R1.addSection(SectionType.OBJECTIVE, new TextSection("Objective1"));
         R1.addSection(SectionType.PERSONAL, new TextSection("Personal data"));
         R1.addSection(SectionType.ACHIEVEMENT, new ListSection("Achievement11,", "Achievement12", "Achievement13"));

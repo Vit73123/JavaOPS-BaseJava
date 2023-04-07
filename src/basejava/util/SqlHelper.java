@@ -15,27 +15,50 @@ public class SqlHelper {
         this.connectionFactory = connectionFactory;
     }
 
-    public void doExecute(String stmt, String ... params) {
-        try (PreparedStatement ps = getPreparedStatement(stmt, params)) {
-            ps.execute();
+    public ResultSet select(String stmt, String ... params) throws SQLException {
+        ResultSet rs = selectQuery(stmt, params);
+        return rs;
+    }
+
+    public int insert(String stmt, String ... params) {
+        try {
+            return updateQuery(stmt, params);
+        } catch (SQLException e) {
+            return 0;
+        }
+    }
+
+    public int delete(String stmt, String ... params) {
+        try {
+            return updateQuery(stmt, params);
         } catch (SQLException e) {
             throw new StorageException(e);
         }
     }
 
-    public ResultSet doExecuteQuery(String stmt, String ... params) {
-        try (PreparedStatement ps = getPreparedStatement(stmt, params)) {
-            ResultSet rs = ps.executeQuery();
+    public int update(String stmt, String ... params) {
+        try {
+            return updateQuery(stmt, params);
         } catch (SQLException e) {
             throw new StorageException(e);
         }
-        return null;
     }
 
-    private PreparedStatement getPreparedStatement(String stmt, String[] params) throws SQLException {
+    private int updateQuery(String stmt, String[] params) throws SQLException {
+        try (PreparedStatement ps = getPreparedStatement(stmt, params)) {
+            return ps.executeUpdate();
+        }
+    }
+
+    public ResultSet selectQuery(String stmt, String[] params) throws SQLException {
+        PreparedStatement ps = getPreparedStatement(stmt, params);
+        return ps.executeQuery();
+    }
+
+    private PreparedStatement getPreparedStatement(String stmt, String ... params) throws SQLException {
         PreparedStatement ps = connectionFactory.getConnection().prepareStatement(stmt);
-        for(int i = 1; i <= params.length; i++) {
-            ps.setString(i, params[i]);
+        for(int i = 0; i < params.length; i++) {
+            ps.setString(i + 1, params[i]);
         }
         return ps;
     }
