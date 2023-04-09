@@ -1,5 +1,8 @@
 package basejava;
 
+import basejava.storage.SqlStorage;
+import basejava.storage.Storage;
+
 import java.io.*;
 import java.util.Properties;
 
@@ -10,6 +13,8 @@ public class Config {
     private Properties props = new Properties();
     private File storageDir;
 
+    Storage storage;
+
     private Config() {
         try(InputStream is = new FileInputStream(PROPS)) {
             props.load(is);
@@ -19,17 +24,22 @@ public class Config {
         } catch (IOException e) {
             throw new IllegalStateException("Invalid config file " + PROPS.getAbsolutePath());
         }
+        storage = new SqlStorage(
+                props.getProperty("db.url"),
+                props.getProperty("db.user"),
+                props.getProperty("db.password")
+        );
     }
 
     public static Config get() {
         return INSTANCE;
     }
 
-    public String getProperty(String property) {
-        return props.getProperty(property);
-    }
-
     public File getStorageDir() {
         return storageDir;
+    }
+
+    public Storage getStorage() {
+        return storage;
     }
 }

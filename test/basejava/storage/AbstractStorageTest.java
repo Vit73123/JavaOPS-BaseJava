@@ -20,10 +20,6 @@ public abstract class AbstractStorageTest {
 
     protected static final File STORAGE_DIR = Config.get().getStorageDir();
 
-    protected static final String DB_URL = Config.get().getProperty("db.url");
-    protected static final String DB_USER = Config.get().getProperty("db.user");
-    protected static final String DB_PASSWORD = Config.get().getProperty("db.password");
-
     protected final Storage storage;
 
     private static final int INITIAL_SIZE = 3;
