@@ -13,6 +13,7 @@ import java.time.Month;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,10 +25,10 @@ public abstract class AbstractStorageTest {
 
     private static final int INITIAL_SIZE = 3;
 
-    private static final String UUID_1 = "uuid1";
-    private static final String UUID_2 = "uuid2";
-    private static final String UUID_3 = "uuid3";
-    private static final String UUID_4 = "uuid4";
+    private static final String UUID_1 = String.valueOf(UUID.randomUUID());
+    private static final String UUID_2 = String.valueOf(UUID.randomUUID());;
+    private static final String UUID_3 = String.valueOf(UUID.randomUUID());;
+    private static final String UUID_4 = String.valueOf(UUID.randomUUID());;
 
     private static final Resume R1;
     private static final Resume R2;

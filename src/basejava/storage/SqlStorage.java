@@ -65,7 +65,7 @@ public class SqlStorage implements Storage {
         List<Resume> resumes = new ArrayList<>();
         try (ResultSet rs = sqlHelper.select("SELECT * FROM resume r ORDER BY full_name")) {
             while (rs.next()) {
-                resumes.add(new Resume(rs.getString("uuid").trim(), rs.getString("full_name").trim()));
+                resumes.add(new Resume(rs.getString("uuid"), rs.getString("full_name")));
             }
         } catch (SQLException e) {
             throw new StorageException(e);
