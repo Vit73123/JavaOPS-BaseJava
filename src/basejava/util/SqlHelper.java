@@ -3,6 +3,7 @@ package basejava.util;
 import basejava.exception.StorageException;
 import basejava.sql.ConnectionFactory;
 
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,8 +12,8 @@ public class SqlHelper {
 
     private final ConnectionFactory connectionFactory;
 
-    public SqlHelper(ConnectionFactory connectionFactory) {
-        this.connectionFactory = connectionFactory;
+    public SqlHelper(String dbUrl, String dbUser, String dbPassword) {
+        connectionFactory = () -> DriverManager.getConnection(dbUrl, dbUser, dbPassword);
     }
 
     public ResultSet select(String stmt, String ... params) throws SQLException {

@@ -4,7 +4,6 @@ import basejava.exception.ExistStorageException;
 import basejava.exception.NotExistStorageException;
 import basejava.exception.StorageException;
 import basejava.model.Resume;
-import basejava.sql.ConnectionFactory;
 import basejava.util.SqlHelper;
 
 import java.sql.*;
@@ -13,13 +12,10 @@ import java.util.List;
 
 public class SqlStorage implements Storage {
 
-    public final ConnectionFactory connectionFactory;
-
     private final SqlHelper sqlHelper;
 
     public SqlStorage(String dbUrl, String dbUser, String dbPassword) {
-        connectionFactory = () -> DriverManager.getConnection(dbUrl, dbUser, dbPassword);
-        sqlHelper = new SqlHelper(connectionFactory);
+        sqlHelper = new SqlHelper(dbUrl, dbUser, dbPassword);
     }
 
     @Override
@@ -67,7 +63,7 @@ public class SqlStorage implements Storage {
     @Override
     public List<Resume> getAllSorted() {
         List<Resume> resumes = new ArrayList<>();
-        try (ResultSet rs = sqlHelper.select("SELECT * FROM resume r ORDER BY uuid")) {
+        try (ResultSet rs = sqlHelper.select("SELECT * FROM resume r ORDER BY full_name")) {
             while (rs.next()) {
                 resumes.add(new Resume(rs.getString("uuid").trim(), rs.getString("full_name").trim()));
             }
