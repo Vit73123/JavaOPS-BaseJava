@@ -5,7 +5,6 @@ import basejava.sql.ConnectionFactory;
 
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class SqlHelper {
@@ -16,51 +15,19 @@ public class SqlHelper {
         connectionFactory = () -> DriverManager.getConnection(dbUrl, dbUser, dbPassword);
     }
 
-    public ResultSet select(String stmt, String ... params) throws SQLException {
-        ResultSet rs = selectQuery(stmt, params);
-        return rs;
-    }
-
-    public int insert(String stmt, String ... params) {
-        try {
-            return updateQuery(stmt, params);
-        } catch (SQLException e) {
-            return 0;
-        }
-    }
-
-    public int delete(String stmt, String ... params) {
-        try {
-            return updateQuery(stmt, params);
+    public <T> T doQuery(Processor<T> processor, String stmt, String ... params) {
+        try (PreparedStatement ps = connectionFactory.getConnection().prepareStatement(stmt)) {
+            for (int i = 0; i < params.length; i++) {
+                ps.setString(i + 1, params[i]);
+            }
+            return processor.process(ps);
         } catch (SQLException e) {
             throw new StorageException(e);
         }
     }
 
-    public int update(String stmt, String ... params) {
-        try {
-            return updateQuery(stmt, params);
-        } catch (SQLException e) {
-            throw new StorageException(e);
-        }
-    }
+    public interface Processor<T> {
 
-    private int updateQuery(String stmt, String[] params) throws SQLException {
-        try (PreparedStatement ps = getPreparedStatement(stmt, params)) {
-            return ps.executeUpdate();
-        }
-    }
-
-    public ResultSet selectQuery(String stmt, String[] params) throws SQLException {
-        PreparedStatement ps = getPreparedStatement(stmt, params);
-        return ps.executeQuery();
-    }
-
-    private PreparedStatement getPreparedStatement(String stmt, String ... params) throws SQLException {
-        PreparedStatement ps = connectionFactory.getConnection().prepareStatement(stmt);
-        for(int i = 0; i < params.length; i++) {
-            ps.setString(i + 1, params[i]);
-        }
-        return ps;
+        T process(PreparedStatement ps) throws SQLException;
     }
 }
