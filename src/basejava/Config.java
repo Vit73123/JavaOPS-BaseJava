@@ -14,8 +14,6 @@ public class Config {
     private final File storageDir;
     private final Storage storage;
 
-    Storage storage;
-
     private Config() {
         try(InputStream is = new FileInputStream(PROPS)) {
             Properties props = new Properties();
@@ -31,11 +29,6 @@ public class Config {
         } catch (IOException e) {
             throw new IllegalStateException("Invalid config file " + PROPS.getAbsolutePath());
         }
-        storage = new SqlStorage(
-                props.getProperty("db.url"),
-                props.getProperty("db.user"),
-                props.getProperty("db.password")
-        );
     }
 
     public static Config get() {

@@ -1,7 +1,6 @@
 package basejava.storage;
 
 import basejava.exception.NotExistStorageException;
-import basejava.exception.StorageException;
 import basejava.model.Resume;
 import basejava.sql.SqlHelper;
 
