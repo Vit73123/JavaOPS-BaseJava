@@ -25,10 +25,10 @@ public abstract class AbstractStorageTest {
 
     private static final int INITIAL_SIZE = 3;
 
-    private static final String UUID_1 = String.valueOf(UUID.randomUUID());
-    private static final String UUID_2 = String.valueOf(UUID.randomUUID());;
-    private static final String UUID_3 = String.valueOf(UUID.randomUUID());;
-    private static final String UUID_4 = String.valueOf(UUID.randomUUID());;
+    private static final String UUID_1 = UUID.randomUUID().toString();
+    private static final String UUID_2 = UUID.randomUUID().toString();
+    private static final String UUID_3 = UUID.randomUUID().toString();
+    private static final String UUID_4 = UUID.randomUUID().toString();
 
     private static final Resume R1;
     private static final Resume R2;
@@ -47,7 +47,6 @@ public abstract class AbstractStorageTest {
         R2.addContact(ContactType.SKYPE, "skype2");
         R2.addContact(ContactType.PHONE, "22222");
 
-/*
         R1.addSection(SectionType.OBJECTIVE, new TextSection("Objective1"));
         R1.addSection(SectionType.PERSONAL, new TextSection("Personal data"));
         R1.addSection(SectionType.ACHIEVEMENT, new ListSection("Achievement11,", "Achievement12", "Achievement13"));
