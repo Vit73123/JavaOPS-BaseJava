@@ -17,11 +17,6 @@ public class SqlHelper {
 
     public <T> T doQuery(String stmt, Processor<T> processor) {
         try (PreparedStatement ps = connectionFactory.getConnection().prepareStatement(stmt)) {
-/*
-            for (int i = 0; i < params.length; i++) {
-                ps.setString(i + 1, params[i]);
-            }
-*/
             return processor.process(ps);
         } catch (SQLException e) {
             throw new StorageException(e);
