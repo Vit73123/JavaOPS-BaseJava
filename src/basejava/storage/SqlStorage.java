@@ -1,7 +1,6 @@
 package basejava.storage;
 
 import basejava.exception.NotExistStorageException;
-import basejava.exception.StorageException;
 import basejava.model.ContactType;
 import basejava.model.Resume;
 import basejava.sql.SqlHelper;
@@ -131,18 +130,32 @@ public class SqlStorage implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
-        return sqlHelper.execute("""
-            SELECT     *
-              FROM     resume r
-              order by full_name, uuid""",
-            ps -> {
+        return sqlHelper.transactionalExecute(conn -> {
+            List<Resume> resumes = new ArrayList<>();
+            try (PreparedStatement ps = conn.prepareStatement("""
+                    SELECT      *
+                      FROM      resume r
+                      order by  full_name, uuid""")) {
                 ResultSet rs = ps.executeQuery();
-                List<Resume> resumes = new ArrayList<>();
                 while (rs.next()) {
-                    resumes.add(new Resume(rs.getString("uuid"), rs.getString("full_name")));
+                    Resume resume = new Resume(rs.getString("uuid"), rs.getString("full_name"));
+                    try (PreparedStatement subps = conn.prepareStatement("""
+                            SELECT      *
+                              FROM      contact c
+                              WHERE     c.resume_uuid = ?""")) {
+                        subps.setString(1, resume.getUuid());
+                        ResultSet subrs = subps.executeQuery();
+                        while (subrs.next()) {
+                            ContactType type = ContactType.valueOf(subrs.getString("type"));
+                            String value = subrs.getString("value");
+                            resume.addContact(type, value);
+                        }
+                    }
+                    resumes.add(resume);
                 }
-                return resumes;
-            });
+            }
+            return resumes;
+        });
     }
 
     @Override
