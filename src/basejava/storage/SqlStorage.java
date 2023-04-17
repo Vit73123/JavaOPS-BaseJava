@@ -28,26 +28,33 @@ public class SqlStorage implements Storage {
 
     @Override
     public Resume get(String uuid) {
-        return sqlHelper.execute("""
-            SELECT      *
-              FROM      resume r 
-              left join contact c
-                on      r.uuid = c.resume_uuid  
-              WHERE     r.uuid = ?""",
-            ps -> {
+        return sqlHelper.transactionalExecute(conn -> {
+            Resume resume;
+            try (PreparedStatement ps = conn.prepareStatement("""
+                    SELECT      *
+                      FROM      resume r 
+                      WHERE     r.uuid = ?""")) {
                 ps.setString(1, uuid);
                 ResultSet rs = ps.executeQuery();
                 if (!rs.next()) {
                     throw new NotExistStorageException(uuid);
                 }
-                Resume r = new Resume(uuid, rs.getString("full_name"));
-                do {
+                resume = new Resume(uuid, rs.getString("full_name"));
+            }
+            try (PreparedStatement ps = conn.prepareStatement("""
+                    SELECT      *
+                      FROM      contact c
+                      WHERE     c.resume_uuid = ?""")) {
+                ps.setString(1, uuid);
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
                     String value = rs.getString("value");
                     ContactType type = ContactType.valueOf(rs.getString("type"));
-                    r.addContact(type, value);
-                } while (rs.next());
-                return r;
-            });
+                    resume.addContact(type, value);
+                }
+            }
+            return resume;
+        });
     }
 
     @Override
@@ -92,6 +99,8 @@ public class SqlStorage implements Storage {
             return null;
         });
     }
+
+//    private Connection doWrite()
 
     @Override
     public void delete(String uuid) {
