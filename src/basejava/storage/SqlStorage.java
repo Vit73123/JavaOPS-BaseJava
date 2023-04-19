@@ -70,9 +70,16 @@ public class SqlStorage implements Storage {
                 }
             }
             try (PreparedStatement ps = conn.prepareStatement("" +
-                    "UPDATE     contact " +
-                    "   SET     type = ?, value = ? " +
+                    "DELETE " +
+                    "   FROM    contact " +
                     "   WHERE   uuid = ?")) {
+                ps.setString(1, r.getUuid());
+                ps.executeBatch();
+            }
+            try (PreparedStatement ps = conn.prepareStatement("" +
+                    "INSERT " +
+                    "   INTO    contact (type, value) " +
+                    "   VALUES  (?, ?)")) {
                 for (Map.Entry<ContactType, String> e : r.getContacts().entrySet()) {
                     ps.setString(1, e.getKey().name());
                     ps.setString(2, e.getValue());
