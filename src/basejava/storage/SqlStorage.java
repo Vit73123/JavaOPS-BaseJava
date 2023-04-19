@@ -20,19 +20,19 @@ public class SqlStorage implements Storage {
 
     @Override
     public void clear() {
-        sqlHelper.execute("""
-            DELETE
-              FROM resume""");
+        sqlHelper.execute("" +
+                "DELETE " +
+                "FROM resume");
     }
 
     @Override
     public Resume get(String uuid) {
         return sqlHelper.transactionalExecute(conn -> {
             Resume resume;
-            try (PreparedStatement ps = conn.prepareStatement("""
-                    SELECT      *
-                      FROM      resume r 
-                      WHERE     r.uuid = ?""")) {
+            try (PreparedStatement ps = conn.prepareStatement("" +
+                    "SELECT      * " +
+                    "   FROM      resume r " +
+                    "   WHERE     r.uuid = ?")) {
                 ps.setString(1, uuid);
                 ResultSet rs = ps.executeQuery();
                 if (!rs.next()) {
@@ -40,10 +40,10 @@ public class SqlStorage implements Storage {
                 }
                 resume = new Resume(uuid, rs.getString("full_name"));
             }
-            try (PreparedStatement ps = conn.prepareStatement("""
-                    SELECT      *
-                      FROM      contact c
-                      WHERE     c.resume_uuid = ?""")) {
+            try (PreparedStatement ps = conn.prepareStatement("" +
+                    "SELECT      * " +
+                    "   FROM      contact c " +
+                    "   WHERE     c.resume_uuid = ?")) {
                 ps.setString(1, uuid);
                 ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
@@ -59,21 +59,20 @@ public class SqlStorage implements Storage {
     @Override
     public void update(Resume r) {
         sqlHelper.transactionalExecute(conn -> {
-            try (PreparedStatement ps = conn.prepareStatement("""
-                    update  resume
-                      set   full_name = ?
-                      where uuid = ?""")) {
+            try (PreparedStatement ps = conn.prepareStatement("" +
+                    "UPDATE RESUME " +
+                    "   SET    full_name = ? " +
+                    "   WHERE uuid = ?")) {
                 ps.setString(1, r.getFullName());
                 ps.setString(2, r.getUuid());
                 if (ps.executeUpdate() == 0) {
                     throw new NotExistStorageException(r.getUuid());
                 }
             }
-            try (PreparedStatement ps = conn.prepareStatement("""
-                    update  contact
-                      set   type = ?,
-                            value = ?
-                      where uuid = ?""")) {
+            try (PreparedStatement ps = conn.prepareStatement("" +
+                    "UPDATE     contact " +
+                    "   SET     type = ?, value = ? " +
+                    "   WHERE   uuid = ?")) {
                 for (Map.Entry<ContactType, String> e : r.getContacts().entrySet()) {
                     ps.setString(1, e.getKey().name());
                     ps.setString(2, e.getValue());
@@ -89,18 +88,18 @@ public class SqlStorage implements Storage {
     @Override
     public void save(Resume r) {
         sqlHelper.transactionalExecute(conn -> {
-            try (PreparedStatement ps = conn.prepareStatement("""
-                    INSERT
-                      INTO   resume (uuid, full_name)
-                      VALUES (?, ?)""")) {
+            try (PreparedStatement ps = conn.prepareStatement("" +
+                    "INSERT " +
+                    "   INTO    resume (uuid, full_name) " +
+                    "   VALUES (?, ?)")) {
                 ps.setString(1, r.getUuid());
                 ps.setString(2, r.getFullName());
                 ps.execute();
             }
-            try (PreparedStatement ps = conn.prepareStatement("""
-                    INSERT
-                      INTO   contact (resume_uuid, type, value)
-                      VALUES (?, ?, ?)""")) {
+            try (PreparedStatement ps = conn.prepareStatement("" +
+                    "INSERT " +
+                    "   INTO    contact (resume_uuid, type, value) " +
+                    "   VALUES (?, ?, ?)")) {
                 for (Map.Entry<ContactType, String> e : r.getContacts().entrySet()) {
                     ps.setString(1, r.getUuid());
                     ps.setString(2, e.getKey().name());
@@ -115,10 +114,10 @@ public class SqlStorage implements Storage {
 
     @Override
     public void delete(String uuid) {
-        sqlHelper.<Void>execute("""
-            delete
-              from  resume
-              where uuid = ?""",
+        sqlHelper.<Void>execute("" +
+                "DELETE " +
+                "   FROM    resume " +
+                "   WHERE   uuid = ?",
             ps -> {
                 ps.setString(1, uuid);
                 if (ps.executeUpdate() == 0) {
@@ -132,17 +131,17 @@ public class SqlStorage implements Storage {
     public List<Resume> getAllSorted() {
         return sqlHelper.transactionalExecute(conn -> {
             List<Resume> resumes = new ArrayList<>();
-            try (PreparedStatement ps = conn.prepareStatement("""
-                    SELECT      *
-                      FROM      resume r
-                      order by  full_name, uuid""")) {
+            try (PreparedStatement ps = conn.prepareStatement("" +
+                    "SELECT         * " +
+                    "   FROM        resume r " +
+                    "   ORDER BY    full_name, uuid")) {
                 ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
                     Resume resume = new Resume(rs.getString("uuid"), rs.getString("full_name"));
-                    try (PreparedStatement subps = conn.prepareStatement("""
-                            SELECT      *
-                              FROM      contact c
-                              WHERE     c.resume_uuid = ?""")) {
+                    try (PreparedStatement subps = conn.prepareStatement("" +
+                            "SELECT     * " +
+                            "   FROM    contact c " +
+                            "   WHERE     c.resume_uuid = ?")) {
                         subps.setString(1, resume.getUuid());
                         ResultSet subrs = subps.executeQuery();
                         while (subrs.next()) {
@@ -160,9 +159,9 @@ public class SqlStorage implements Storage {
 
     @Override
     public int size() {
-        return sqlHelper.execute("""
-            select count(*)
-              from resume""",
+        return sqlHelper.execute("" +
+                "SELECT     COUNT(*) " +
+                "   FROM    resume",
             ps -> {
                 ResultSet rs = ps.executeQuery();
                 return rs.next() ? rs.getInt(1) : 0;
