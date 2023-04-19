@@ -22,7 +22,7 @@ public class SqlStorage implements Storage {
     public void clear() {
         sqlHelper.execute("" +
                 "DELETE " +
-                "FROM resume");
+                "   FROM resume");
     }
 
     @Override
@@ -139,25 +139,28 @@ public class SqlStorage implements Storage {
         return sqlHelper.transactionalExecute(conn -> {
             List<Resume> resumes = new ArrayList<>();
             try (PreparedStatement ps = conn.prepareStatement("" +
-                    "SELECT         * " +
-                    "   FROM        resume r " +
-                    "   ORDER BY    full_name, uuid")) {
+                    "SELECT             * " +
+                    "   FROM            resume r " +
+                    "       LEFT JOIN   contact c " +
+                    "       ON          r.uuid = c.resume_uuid" +
+                    "   ORDER BY        full_name, uuid ")) {
                 ResultSet rs = ps.executeQuery();
+                Resume r = null;
+                String uuidPrev = null;
                 while (rs.next()) {
-                    Resume resume = new Resume(rs.getString("uuid"), rs.getString("full_name"));
-                    try (PreparedStatement subps = conn.prepareStatement("" +
-                            "SELECT     * " +
-                            "   FROM    contact c " +
-                            "   WHERE     c.resume_uuid = ?")) {
-                        subps.setString(1, resume.getUuid());
-                        ResultSet subrs = subps.executeQuery();
-                        while (subrs.next()) {
-                            ContactType type = ContactType.valueOf(subrs.getString("type"));
-                            String value = subrs.getString("value");
-                            resume.addContact(type, value);
+                    String uuidNext = rs.getString("uuid");
+                    if (!uuidNext.equals(uuidPrev)) {
+                        r = new Resume(rs.getString("uuid"), rs.getString("full_name"));
+                    } else {
+                        String type = rs.getString("type");
+                        if (type != null) {
+                            r.addContact(
+                                    ContactType.valueOf(type),
+                                    rs.getString("value")
+                            );
                         }
                     }
-                    resumes.add(resume);
+                    resumes.add(r);
                 }
             }
             return resumes;
