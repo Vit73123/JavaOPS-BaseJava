@@ -20,9 +20,7 @@ public class SqlStorage implements Storage {
 
     @Override
     public void clear() {
-        sqlHelper.execute("" +
-                "DELETE " +
-                "   FROM resume");
+        sqlHelper.execute("DELETE FROM resume");
     }
 
     @Override
@@ -30,9 +28,8 @@ public class SqlStorage implements Storage {
         return sqlHelper.transactionalExecute(conn -> {
             Resume resume;
             try (PreparedStatement ps = conn.prepareStatement("" +
-                    "SELECT      * " +
-                    "   FROM      resume r " +
-                    "   WHERE     r.uuid = ?")) {
+                    "SELECT * FROM resume r " +
+                    " WHERE r.uuid = ?")) {
                 ps.setString(1, uuid);
                 ResultSet rs = ps.executeQuery();
                 if (!rs.next()) {
@@ -41,9 +38,8 @@ public class SqlStorage implements Storage {
                 resume = new Resume(uuid, rs.getString("full_name"));
             }
             try (PreparedStatement ps = conn.prepareStatement("" +
-                    "SELECT      * " +
-                    "   FROM      contact c " +
-                    "   WHERE     c.resume_uuid = ?")) {
+                    "SELECT * FROM contact c " +
+                    " WHERE c.resume_uuid = ?")) {
                 ps.setString(1, uuid);
                 ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
@@ -60,9 +56,8 @@ public class SqlStorage implements Storage {
     public void update(Resume r) {
         sqlHelper.transactionalExecute(conn -> {
             try (PreparedStatement ps = conn.prepareStatement("" +
-                    "UPDATE RESUME " +
-                    "   SET    full_name = ? " +
-                    "   WHERE uuid = ?")) {
+                    "UPDATE RESUME SET full_name = ? " +
+                    " WHERE uuid = ?")) {
                 ps.setString(1, r.getFullName());
                 ps.setString(2, r.getUuid());
                 if (ps.executeUpdate() == 0) {
@@ -70,23 +65,19 @@ public class SqlStorage implements Storage {
                 }
             }
             try (PreparedStatement ps = conn.prepareStatement("" +
-                    "DELETE " +
-                    "   FROM    contact " +
-                    "   WHERE   uuid = ?")) {
+                    "DELETE FROM contact" +
+                    " WHERE uuid = ?")) {
                 ps.setString(1, r.getUuid());
                 ps.executeBatch();
             }
             try (PreparedStatement ps = conn.prepareStatement("" +
-                    "INSERT " +
-                    "   INTO    contact (type, value) " +
-                    "   VALUES  (?, ?)")) {
+                    "INSERT INTO contact (resume_uuid, type, value) VALUES (?, ?, ?)")) {
                 for (Map.Entry<ContactType, String> e : r.getContacts().entrySet()) {
-                    ps.setString(1, e.getKey().name());
-                    ps.setString(2, e.getValue());
-                    ps.setString(3, r.getUuid());
+                    ps.setString(1, r.getUuid());
+                    ps.setString(2, e.getKey().name());
+                    ps.setString(3, e.getValue());
                     ps.addBatch();
                 }
-                ps.executeBatch();
             }
             return null;
         });
@@ -96,17 +87,13 @@ public class SqlStorage implements Storage {
     public void save(Resume r) {
         sqlHelper.transactionalExecute(conn -> {
             try (PreparedStatement ps = conn.prepareStatement("" +
-                    "INSERT " +
-                    "   INTO    resume (uuid, full_name) " +
-                    "   VALUES (?, ?)")) {
+                    "INSERT INTO resume (uuid, full_name) VALUES (?, ?)")) {
                 ps.setString(1, r.getUuid());
                 ps.setString(2, r.getFullName());
                 ps.execute();
             }
             try (PreparedStatement ps = conn.prepareStatement("" +
-                    "INSERT " +
-                    "   INTO    contact (resume_uuid, type, value) " +
-                    "   VALUES (?, ?, ?)")) {
+                    "INSERT INTO contact (resume_uuid, type, value) VALUES (?, ?, ?)")) {
                 for (Map.Entry<ContactType, String> e : r.getContacts().entrySet()) {
                     ps.setString(1, r.getUuid());
                     ps.setString(2, e.getKey().name());
@@ -122,9 +109,8 @@ public class SqlStorage implements Storage {
     @Override
     public void delete(String uuid) {
         sqlHelper.<Void>execute("" +
-                "DELETE " +
-                "   FROM    resume " +
-                "   WHERE   uuid = ?",
+                "DELETE FROM resume " +
+                " WHERE uuid = ?",
             ps -> {
                 ps.setString(1, uuid);
                 if (ps.executeUpdate() == 0) {
@@ -139,11 +125,10 @@ public class SqlStorage implements Storage {
         return sqlHelper.transactionalExecute(conn -> {
             List<Resume> resumes = new ArrayList<>();
             try (PreparedStatement ps = conn.prepareStatement("" +
-                    "SELECT             * " +
-                    "   FROM            resume r " +
-                    "       LEFT JOIN   contact c " +
-                    "       ON          r.uuid = c.resume_uuid" +
-                    "   ORDER BY        full_name, uuid ")) {
+                    "   SELECT * FROM resume r " +
+                    "LEFT JOIN contact c " +
+                    "       ON r.uuid = c.resume_uuid" +
+                    " ORDER BY full_name, uuid ")) {
                 ResultSet rs = ps.executeQuery();
                 Resume r = null;
                 String uuidPrev = null;
@@ -169,9 +154,7 @@ public class SqlStorage implements Storage {
 
     @Override
     public int size() {
-        return sqlHelper.execute("" +
-                "SELECT     COUNT(*) " +
-                "   FROM    resume",
+        return sqlHelper.execute("SELECT COUNT(*) FROM resume",
             ps -> {
                 ResultSet rs = ps.executeQuery();
                 return rs.next() ? rs.getInt(1) : 0;
