@@ -17,11 +17,11 @@ create table contact
 );
 
 create unique index contact_uuid_id_index
-    on contact (id, resume_uuid, type);
+    on contact (resume_uuid, type);
 
 create table section
 (
-    id          serial,
+    id          serial primary key,
     resume_uuid char(36) not null
         references resume (uuid)
             on update restrict
@@ -30,5 +30,6 @@ create table section
     content     text not null
 );
 
-create unique index section_uuid_id_index
+create unique index section_idx
     on section (id, resume_uuid, type);
+

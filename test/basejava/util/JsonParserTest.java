@@ -11,7 +11,7 @@ import static basejava.TestData.R1;
 class JsonParserTest {
 
     @Test
-    public void testResume() {
+    void testResume() {
         String json = JsonParser.write(R1);
         System.out.println(json);
         Resume resume = JsonParser.read(json, Resume.class);
