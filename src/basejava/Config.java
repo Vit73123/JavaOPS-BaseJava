@@ -8,14 +8,14 @@ import java.util.Properties;
 
 public class Config {
 
-    private static final File PROPS = new File(getHomeDir(), "config\\resumes.properties");
+    private static final String PROPS = "/resumes.properties";
     private static final Config INSTANCE = new Config();
 
     private final File storageDir;
     private final Storage storage;
 
     private Config() {
-        try(InputStream is = new FileInputStream(PROPS)) {
+        try(InputStream is = Config.class.getResourceAsStream(PROPS)) {
             Properties props = new Properties();
             props.load(is);
             storageDir = new File(props.getProperty("storage.dir"));
@@ -27,7 +27,7 @@ public class Config {
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
-            throw new IllegalStateException("Invalid config file " + PROPS.getAbsolutePath());
+            throw new IllegalStateException("Invalid config file " + PROPS);
         }
     }
 
